@@ -1,50 +1,46 @@
-import React from "react";
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchReports } from '../../../../redux/admin/reportsSlice';
 
-const PupilReport = ({ report }) => {
-  if (!report) {
-    return <p className="text-white">No report available for this pupil.</p>;
-  }
+const ParentReportsList = () => {
+  const dispatch = useDispatch();
+  const { reports, isLoading, error } = useSelector((state) => state.reports);
 
-  const { pupilName, grade, comments, subjects, date, recommendations } = report;
+  useEffect(() => {
+    dispatch(fetchReports());
+  }, [dispatch]);
+
+  if (isLoading) return <p className="text-gray-700">Loading reports...</p>;
+  if (error) return <p className="text-red-600">{error}</p>;
 
   return (
-    <div className="p-6 bg-secondary-light rounded-lg shadow-lg max-w-3xl mx-auto">
-      <h2 className="text-3xl font-bold text-primary mb-4">Report for {pupilName}</h2>
-      <p className="text-white mb-2">
-        <strong>Grade:</strong> {grade}
-      </p>
-      <p className="text-white mb-4">
-        <strong>Date:</strong> {new Date(date).toLocaleDateString()}
-      </p>
-
-      <section className="mb-6">
-        <h3 className="text-xl font-semibold text-primary mb-2">Subject Performance</h3>
-        <ul className="list-disc list-inside text-white">
-          {subjects.map(({ name, score, remarks }) => (
-            <li key={name} className="mb-1">
-              <strong>{name}:</strong> {score} — {remarks}
+    <div className="max-w-3xl mx-auto p-6 bg-white shadow rounded-lg text-gray-900">
+      <h2 className="text-xl font-bold mb-4 text-gray-900">My Child's Reports</h2>
+      {reports.length === 0 ? (
+        <p className="text-gray-700">No reports found.</p>
+      ) : (
+        <ul>
+          {reports.map((report) => (
+            <li key={report.id} className="mb-3 border-b pb-2">
+              <strong className="text-black">{report.title}</strong> — Uploaded on{' '}
+              <span className="text-gray-800">
+                {new Date(report.uploaded_at).toLocaleDateString()}
+              </span>
+              <br />
+              <a
+                href={report.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline"
+              >
+                View Report
+              </a>
             </li>
           ))}
         </ul>
-      </section>
-
-      <section className="mb-6">
-        <h3 className="text-xl font-semibold text-primary mb-2">Teacher’s Comments</h3>
-        <p className="text-white">{comments}</p>
-      </section>
-
-      {recommendations && recommendations.length > 0 && (
-        <section>
-          <h3 className="text-xl font-semibold text-primary mb-2">Recommendations</h3>
-          <ul className="list-disc list-inside text-white">
-            {recommendations.map((rec, idx) => (
-              <li key={idx}>{rec}</li>
-            ))}
-          </ul>
-        </section>
       )}
     </div>
   );
 };
 
-export default PupilReport;
+export default ParentReportsList;

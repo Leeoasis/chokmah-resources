@@ -8,7 +8,7 @@ import ParentSidebar from "./features/parent/Sidebar";
 import Header from "./features/parent/Header";
 import CalendarSection from "./features/student/CalenderSection";
 import WelcomeSection from "./features/student/WelcomeSection";
-import ReportsSection from "./features/student/Reports";
+import ReportsSection from "./features/parent/Reports";
 import StudentProfileSection from "./features/student/ProfileSection";
 import NotificationsSection from "./features/student/Notifications";
 import { ToastContainer } from "react-toastify";

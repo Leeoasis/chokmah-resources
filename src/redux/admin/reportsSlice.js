@@ -1,4 +1,3 @@
-// redux/admin/reportsSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
@@ -6,7 +5,7 @@ export const uploadReport = createAsyncThunk(
   'reports/upload',
   async (reportData, thunkAPI) => {
     const token = localStorage.getItem('token');
-    const response = await axios.post('http://localhost:3000/api/v1/reports', reportData, {
+    const response = await axios.post('http://localhost:3000/api/v1/users/reports', reportData, {
       headers: {
         'Authorization': token,
         'Content-Type': 'multipart/form-data',
@@ -27,10 +26,22 @@ export const fetchLearners = createAsyncThunk(
   }
 );
 
+export const fetchReports = createAsyncThunk(
+  'reports/fetchReports',
+  async (_, thunkAPI) => {
+    const token = localStorage.getItem('token');
+    const response = await axios.get('http://localhost:3000/api/v1/users/reports', {
+      headers: { Authorization: token }
+    });
+    return response.data;
+  }
+);
+
 const reportsSlice = createSlice({
   name: 'reports',
   initialState: {
     learners: [],
+    reports: [],
     isLoading: false,
     success: false,
     error: null,
@@ -58,6 +69,7 @@ const reportsSlice = createSlice({
         state.success = false;
         state.error = action.error.message;
       })
+
       .addCase(fetchLearners.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -67,6 +79,19 @@ const reportsSlice = createSlice({
         state.learners = action.payload;
       })
       .addCase(fetchLearners.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+
+      .addCase(fetchReports.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchReports.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.reports = action.payload;
+      })
+      .addCase(fetchReports.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
       });
