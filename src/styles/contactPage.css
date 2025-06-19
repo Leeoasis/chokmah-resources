@@ -1,0 +1,48 @@
+/* contactPage.css */
+
+.contact-form,
+.contact-details {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.contact-form:hover,
+.contact-details:hover {
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+#map {
+  border-radius: 8px;
+}
+
+/* contactPage.css */
+
+/* Custom floating animation with slower timing */
+@keyframes slowFloat {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.animate-slow-float {
+  animation: slowFloat 8s ease-in-out infinite;
+}
+
+.contact-form,
+.contact-details {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.contact-form:hover,
+.contact-details:hover {
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+#map {
+  border-radius: 8px;
+}

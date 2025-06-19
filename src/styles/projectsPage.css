@@ -1,0 +1,48 @@
+/* Modal Styles */
+.fixed {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+.carousel .slide img {
+  height: 100%;
+  object-fit: cover;
+}
+
+.carousel .control-dots .dot {
+  background: #ff5722;
+}
+
+.carousel .control-dots .dot.selected {
+  background: #ff9800;
+}
+
+/* Modal Styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.75);
+  z-index: 9999;
+  overflow-y: auto; /* Enable vertical scrolling if content is too large */
+  padding: 20px; /* Add padding to the edges of the modal */
+}
+
+.modal-content {
+  position: relative;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 90%;
+  width: 500px;
+  text-align: center;
+  z-index: 10000;
+  margin: 40px auto; /* Ensure some spacing from the top and bottom */
+}
