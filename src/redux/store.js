@@ -3,6 +3,7 @@ import registerReducer from './auth/registerSlice';
 import loginReducer from './auth/loginSlice';
 import learnerReducer from './admin/learnerFormSlice';
 import reportsReducer from './admin/reportsSlice';
+import resourcesReducer from './parent/resourcesSlice';
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     login: loginReducer,
     learners: learnerReducer,
     reports: reportsReducer,
+    resources: resourcesReducer,
   },
 });
 

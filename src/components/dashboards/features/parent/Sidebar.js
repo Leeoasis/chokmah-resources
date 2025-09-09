@@ -6,10 +6,10 @@ const StudentSidebar = ({ selectedOption, setSelectedOption }) => (
     <nav className="space-y-2 lg:space-y-4">
       {[
         'Reports',
+        'Resources',
         'Profile',
         'Notifications',
         'Calendar',
-        'Messages'
       ].map((option) => (
         <button
           key={option}

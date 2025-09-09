@@ -1,7 +1,5 @@
-// src/pages/StudentDashboard.js
-import React, { useState, useEffect } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import { logout } from "../../redux/actions/logout"; // You may want to comment this out too if it causes errors
+// src/pages/AdminDashboard.js
+import React, { useState } from "react";
 import ModalComponent from "../ModalComponent";
 import { useNavigate } from "react-router-dom";
 import AdminSidebar from "./features/admin/Sidebar";
@@ -12,6 +10,7 @@ import CreateLearnerForm from "./features/admin/CreateLearnerForm";
 import ReportsSection from "./features/admin/AdminReports";
 import StudentProfileSection from "./features/student/ProfileSection";
 import NotificationsSection from "./features/student/Notifications";
+import ResourcesSection from "./features/admin/AdminResources"; // ✅ NEW
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -23,10 +22,7 @@ const AdminDashboard = () => {
   const [eventTitle, setEventTitle] = useState("");
   const [notifications, setNotifications] = useState([]);
 
-  // const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const studentId = 1; // Replace with dynamic auth ID
 
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => {
@@ -41,38 +37,17 @@ const AdminDashboard = () => {
     }
   };
 
-  // Commented out logout dispatch
   const handleLogout = () => {
-    // dispatch(logout());
     navigate("/");
   };
 
   const renderContent = () => {
     const contentMap = {
-      "Create Learner": (
-        <CreateLearnerForm
-          // materials={materials}
-          // loading={loadingMaterials}
-          // error={errorMaterials}
-        />
-      ),
-      Reports: (
-        <ReportsSection
-          // reports={reports}
-          // loading={loadingReports}
-          // error={errorReports}
-        />
-      ),
-      Profile: (
-        <StudentProfileSection
-          // student={student}
-          // loading={loadingStudent}
-          // error={errorStudent}
-        />
-      ),
-      Notifications: (
-        <NotificationsSection notifications={notifications} />
-      ),
+      "Create Learner": <CreateLearnerForm />,
+      Reports: <ReportsSection />,
+      Resources: <ResourcesSection />, // ✅ NEW
+      Profile: <StudentProfileSection />,
+      Notifications: <NotificationsSection notifications={notifications} />,
       Calendar: (
         <CalendarSection
           date={date}
@@ -81,7 +56,6 @@ const AdminDashboard = () => {
           openModal={openModal}
         />
       ),
-      // Messages option removed
     };
 
     return contentMap[selectedOption] || <WelcomeSection />;
@@ -98,7 +72,7 @@ const AdminDashboard = () => {
         <div className="flex-1 p-4 lg:p-8 pt-20 lg:pt-24">
           <Header
             handleLogout={handleLogout}
-            profile={{ name: "Student" }} // fallback profile
+            profile={{ name: "Admin" }} // ✅ updated fallback profile
             notifications={notifications}
           />
           <div className="bg-secondary shadow-lg rounded-lg p-4 lg:p-6 flex-grow">

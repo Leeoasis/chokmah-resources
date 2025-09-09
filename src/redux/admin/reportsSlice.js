@@ -30,12 +30,22 @@ export const fetchReports = createAsyncThunk(
   'reports/fetchReports',
   async (_, thunkAPI) => {
     const token = localStorage.getItem('token');
-    const response = await axios.get('http://localhost:3000/api/v1/users/reports', {
-      headers: { Authorization: token }
-    });
+    const invitation_token = localStorage.getItem('invitation_token');
+
+    const headers = {};
+    if (token) {
+      headers['Authorization'] = token;
+    }
+
+    const url = invitation_token
+      ? `http://localhost:3000/api/v1/users/reports?invitation_token=${invitation_token}`
+      : `http://localhost:3000/api/v1/users/reports`;
+
+    const response = await axios.get(url, { headers });
     return response.data;
   }
 );
+
 
 const reportsSlice = createSlice({
   name: 'reports',

@@ -4,6 +4,7 @@ const AdminSidebar = ({ selectedOption, setSelectedOption }) => {
   const options = [
     "Create Learner",
     "Reports",
+    "Resources",
     "Profile",
     "Notifications",
   ];

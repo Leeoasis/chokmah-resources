@@ -26,6 +26,9 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    localStorage.removeItem('token');
+    localStorage.removeItem('invitation_token');
+
     const data = new FormData();
     data.append('user[email]', formData.email);
     data.append('user[password]', formData.password);

@@ -1,7 +1,5 @@
-// src/pages/StudentDashboard.js
-import React, { useState, useEffect } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import { logout } from "../../redux/actions/logout"; // You may want to comment this out too if it causes errors
+// src/pages/ParentDashboard.js
+import React, { useState } from "react";
 import ModalComponent from "../ModalComponent";
 import { useNavigate } from "react-router-dom";
 import ParentSidebar from "./features/parent/Sidebar";
@@ -11,39 +9,19 @@ import WelcomeSection from "./features/student/WelcomeSection";
 import ReportsSection from "./features/parent/Reports";
 import StudentProfileSection from "./features/student/ProfileSection";
 import NotificationsSection from "./features/student/Notifications";
+import ResourcesSection from "./features/parent/ResourcesSection"; // ✅ NEW
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const StudentDashboard = () => {
-  const [selectedOption, setSelectedOption] = useState("Learning Materials");
+const ParentDashboard = () => {
+  const [selectedOption, setSelectedOption] = useState("Welcome");
   const [date, setDate] = useState(new Date());
   const [events, setEvents] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [eventTitle, setEventTitle] = useState("");
   const [notifications, setNotifications] = useState([]);
 
-  // const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const studentId = 1; // Replace with dynamic auth ID
-
-  // Commented out redux selectors
-  // const { student, loading: loadingStudent, error: errorStudent } = useSelector((state) => state.student);
-  // const { materials, loading: loadingMaterials, error: errorMaterials } = useSelector((state) => state.material);
-  // const { reports, loading: loadingReports, error: errorReports } = useSelector((state) => state.report);
-
-  // Commented out redux dispatch calls
-  // useEffect(() => {
-  //   dispatch(fetchStudentById(studentId));
-  // }, [dispatch, studentId]);
-
-  // useEffect(() => {
-  //   if (selectedOption === "Learning Materials") {
-  //     dispatch(fetchMaterials(studentId));
-  //   } else if (selectedOption === "Reports") {
-  //     dispatch(fetchReports(studentId));
-  //   }
-  // }, [dispatch, selectedOption, studentId]);
 
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => {
@@ -58,38 +36,15 @@ const StudentDashboard = () => {
     }
   };
 
-  // Commented out logout dispatch
   const handleLogout = () => {
-    // dispatch(logout());
     navigate("/");
   };
 
   const renderContent = () => {
     const contentMap = {
-      "Reports Section": (
-        <ReportsSection
-          // materials={materials}
-          // loading={loadingMaterials}
-          // error={errorMaterials}
-        />
-      ),
-      Reports: (
-        <ReportsSection
-          // reports={reports}
-          // loading={loadingReports}
-          // error={errorReports}
-        />
-      ),
-      Profile: (
-        <StudentProfileSection
-          // student={student}
-          // loading={loadingStudent}
-          // error={errorStudent}
-        />
-      ),
-      Notifications: (
-        <NotificationsSection notifications={notifications} />
-      ),
+      Reports: <ReportsSection />,
+      Profile: <StudentProfileSection />,
+      Notifications: <NotificationsSection notifications={notifications} />,
       Calendar: (
         <CalendarSection
           date={date}
@@ -98,7 +53,7 @@ const StudentDashboard = () => {
           openModal={openModal}
         />
       ),
-      // Messages option removed
+      Resources: <ResourcesSection profile={{ role: "parent" }} />, // ✅ NEW
     };
 
     return contentMap[selectedOption] || <WelcomeSection />;
@@ -115,7 +70,7 @@ const StudentDashboard = () => {
         <div className="flex-1 p-4 lg:p-8 pt-20 lg:pt-24">
           <Header
             handleLogout={handleLogout}
-            profile={{ name: "Student" }} // fallback profile
+            profile={{ name: "Parent" }} // fallback profile
             notifications={notifications}
           />
           <div className="bg-secondary shadow-lg rounded-lg p-4 lg:p-6 flex-grow">
@@ -134,4 +89,4 @@ const StudentDashboard = () => {
   );
 };
 
-export default StudentDashboard;
+export default ParentDashboard;

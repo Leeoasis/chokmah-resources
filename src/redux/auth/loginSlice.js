@@ -11,7 +11,14 @@ export const loginUser = createAsyncThunk(
       },
     });
 
-    localStorage.setItem('token', response.headers['Authorization']);
+    // Safely store the token only if it exists and is a reasonable size
+    const authHeader =
+      response.headers['authorization'] || response.headers['Authorization'];
+    if (authHeader && typeof authHeader === 'string' && authHeader.length < 1000) {
+      localStorage.setItem('token', authHeader);
+    } else {
+      localStorage.removeItem('token');
+    }
     localStorage.setItem('user', JSON.stringify(response.data.data));
     return response.data.data;
   }
