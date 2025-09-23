@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { fetchreg } from '../../redux/auth/registerSlice';
 import Navbar from '../landingSite/Navbar';
 import Footer from '../landingSite/Footer';
-import RegisterBackground from '../../assets/images/download.jpg';
+import RegisterBackground from '../../assets/images/download.png';
 
 const Register = () => {
   const [formData, setFormData] = useState({
