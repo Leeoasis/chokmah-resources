@@ -32,7 +32,15 @@ const Register = () => {
   const handleInvitationTokenBlur = async () => {
     if (formData.invitation_token.trim()) {
       try {
-        const res = await fetch(`https://chokmah-resources-backend.onrender.com/api/v1/users/learner_by_token/${formData.invitation_token}`);
+        const res = await fetch(
+          `https://chokmah-resources-backend.onrender.com/api/v1/users/learner_by_token/${formData.invitation_token}`,
+          {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json',
+            },
+          }
+        );
         if (res.ok) {
           const data = await res.json();
           setFormData((prev) => ({
@@ -41,10 +49,10 @@ const Register = () => {
             child_grade: data.child_grade,
           }));
         } else {
-          alert("Invalid invitation code.");
+          alert('Invalid invitation code.');
         }
       } catch (error) {
-        console.error("Error validating token:", error);
+        console.error('Error validating token:', error);
       }
     }
   };
