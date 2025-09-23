@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../../redux/auth/loginSlice';
 import Navbar from '../landingSite/Navbar';
 import Footer from '../landingSite/Footer';
-import LoginBackground from '../../assets/images/download.jpg';
+import LoginBackground from '../../assets/images/download.png';
 
 const Login = () => {
   const [formData, setFormData] = useState({
