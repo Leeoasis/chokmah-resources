@@ -32,7 +32,7 @@ const Register = () => {
   const handleInvitationTokenBlur = async () => {
     if (formData.invitation_token.trim()) {
       try {
-        const res = await fetch(`http://localhost:3000/api/v1/users/learner_by_token/${formData.invitation_token}`);
+        const res = await fetch(`https://chokmah-resources-backend.onrender.com/api/v1/users/learner_by_token/${formData.invitation_token}`);
         if (res.ok) {
           const data = await res.json();
           setFormData((prev) => ({
