@@ -1,7 +1,8 @@
-// src/pages/AdminDashboard.js
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ModalComponent from "../ModalComponent";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
 import AdminSidebar from "./features/admin/Sidebar";
 import Header from "./features/admin/Header";
 import CalendarSection from "./features/student/CalenderSection";
@@ -10,7 +11,11 @@ import CreateLearnerForm from "./features/admin/CreateLearnerForm";
 import ReportsSection from "./features/admin/AdminReports";
 import StudentProfileSection from "./features/student/ProfileSection";
 import NotificationsSection from "./features/student/Notifications";
-import ResourcesSection from "./features/admin/AdminResources"; // ✅ NEW
+import ResourcesSection from "./features/admin/AdminResources";
+
+import { logoutUser } from "../../redux/auth/logoutSlice";
+import { fetchProfile } from "../../redux/profileSlice";
+
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -23,6 +28,13 @@ const AdminDashboard = () => {
   const [notifications, setNotifications] = useState([]);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const profile = useSelector((state) => state.profile?.data);
+
+  useEffect(() => {
+    dispatch(fetchProfile());
+  }, [dispatch]);
 
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => {
@@ -38,14 +50,23 @@ const AdminDashboard = () => {
   };
 
   const handleLogout = () => {
-    navigate("/");
+    dispatch(logoutUser()).then(() => {
+      navigate("/login");
+    });
   };
+
+  const resolvedName =
+    profile?.parent_name ||
+    profile?.child_name ||
+    profile?.name ||
+    JSON.parse(localStorage.getItem("user") || "{}")?.email ||
+    "Admin";
 
   const renderContent = () => {
     const contentMap = {
       "Create Learner": <CreateLearnerForm />,
       Reports: <ReportsSection />,
-      Resources: <ResourcesSection />, // ✅ NEW
+      Resources: <ResourcesSection />,
       Profile: <StudentProfileSection />,
       Notifications: <NotificationsSection notifications={notifications} />,
       Calendar: (
@@ -72,7 +93,7 @@ const AdminDashboard = () => {
         <div className="flex-1 p-4 lg:p-8 pt-20 lg:pt-24">
           <Header
             handleLogout={handleLogout}
-            profile={{ name: "Admin" }} // ✅ updated fallback profile
+            profile={{ name: resolvedName }}
             notifications={notifications}
           />
           <div className="bg-secondary shadow-lg rounded-lg p-4 lg:p-6 flex-grow">

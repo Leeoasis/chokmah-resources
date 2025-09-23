@@ -1,105 +1,209 @@
-import React, { useState, useEffect } from 'react';
+// AdminReports.js
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchLearners, uploadReport } from '../../../../redux/admin/reportsSlice';
+import {
+  uploadReport,
+  fetchReports,
+  fetchLearners,
+  clearSuccessMessage,
+} from '../../../../redux/admin/reportsSlice';
 
-const PupilReportUploadForm = () => {
+const Badge = ({ children }) => (
+  <span className="text-[10px] px-2 py-0.5 rounded-full border border-amber-400/60 bg-amber-400/10 text-amber-200">
+    {children}
+  </span>
+);
+
+const AdminReports = () => {
   const dispatch = useDispatch();
-
-  const [selectedLearner, setSelectedLearner] = useState('');
-  const [title, setTitle] = useState('');
-  const [file, setFile] = useState(null);
-  const [message, setMessage] = useState('');
-
-  // 🛡️ Defensive fallback for safety
-  const { learners = [], isLoading, error, success } = useSelector(
+  const { reports = [], learners = [], isLoading, error, successMessage } = useSelector(
     (state) => state.reports || {}
   );
 
-  console.log('Learners:', learners);
+  // New fields for consistency with parent Year→Term grouping
+  const [title, setTitle] = useState('');
+  const [file, setFile] = useState(null);
+  const [learnerId, setLearnerId] = useState('');
+  const [term, setTerm] = useState('Term 1');
+  const [year, setYear] = useState(String(new Date().getFullYear()));
+  const [subject, setSubject] = useState(''); // optional but useful
 
   useEffect(() => {
-    console.log('Dispatching fetchLearners...');
+    dispatch(fetchReports());
     dispatch(fetchLearners());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (success) {
-      setMessage('Report uploaded successfully.');
-      setTitle('');
-      setFile(null);
-      setSelectedLearner('');
-    }
-  }, [success]);
-
-  useEffect(() => {
-    if (learners.length) {
-      console.log('Learners updated:', learners);
-    }
-  }, [learners]);
-
-  console.log(learners, 'learners');
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!selectedLearner || !title || !file) return;
+    if (!title || !file || !learnerId) {
+      alert('Please fill all required fields and attach a file.');
+      return;
+    }
 
     const formData = new FormData();
     formData.append('report[title]', title);
     formData.append('report[file]', file);
-    formData.append('report[learner_id]', selectedLearner);
+    formData.append('report[learner_id]', learnerId);
+    if (term) formData.append('report[term]', term);
+    if (year) formData.append('report[year]', year);
+    if (subject) formData.append('report[subject]', subject);
 
-    dispatch(uploadReport(formData));
+    dispatch(uploadReport(formData)).then((res) => {
+      if (res.meta?.requestStatus === 'fulfilled') {
+        setTitle('');
+        setFile(null);
+        setLearnerId('');
+        setTerm('Term 1');
+        setYear(String(new Date().getFullYear()));
+        setSubject('');
+        dispatch(fetchReports());
+      }
+    });
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow max-w-xl mx-auto mt-6">
-      <h2 className="text-xl font-bold mb-4 text-gray-900">Upload Learner Report</h2>
-      {message && <p className="mb-4 text-green-700">{message}</p>}
-      {error && <p className="mb-4 text-red-600">{error}</p>}
+    <div className="p-6 bg-gray-900 text-white rounded-2xl border border-white/10">
+      <h2 className="text-2xl font-bold mb-4 text-amber-400">Admin — Upload Reports</h2>
 
-      <form onSubmit={handleSubmit}>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Select Learner</label>
-        <select
-          value={selectedLearner}
-          onChange={(e) => setSelectedLearner(e.target.value)}
-          required
-          className="w-full p-2 mb-4 border border-gray-300 rounded text-black"
-        >
-          <option value="">Choose a learner</option>
-          {learners.map((learner) => (
-            <option key={learner.id} value={learner.id}>
-              {learner.child_name} (Grade {learner.child_grade})
-            </option>
-          ))}
-        </select>
+      {/* Success & error messages */}
+      {successMessage && (
+        <div className="mb-4 p-3 rounded border border-green-600 bg-green-900/30 text-green-200">
+          {successMessage}{' '}
+          <button
+            className="ml-2 text-sm underline"
+            onClick={() => dispatch(clearSuccessMessage())}
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+      {error && (
+        <div className="mb-4 p-3 rounded border border-red-700 bg-red-900/30 text-red-200">
+          {typeof error === 'string' ? error : JSON.stringify(error, null, 2)}
+        </div>
+      )}
 
-        <input
-          type="text"
-          placeholder="Report Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-          className="w-full p-2 mb-4 border border-gray-300 rounded text-black"
-        />
+      {/* Upload Form */}
+      <form onSubmit={handleSubmit} className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium mb-1">Title *</label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="border border-white/10 bg-gray-800 text-white p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-amber-400/60"
+            placeholder="e.g., Term 1 Progress Report"
+            required
+          />
+        </div>
 
-        <input
-          type="file"
-          accept=".pdf,.doc,.docx"
-          onChange={(e) => setFile(e.target.files[0])}
-          required
-          className="w-full p-2 mb-4 border border-gray-300 rounded text-black"
-        />
+        <div>
+          <label className="block text-sm font-medium mb-1">Select Learner *</label>
+          <select
+            value={learnerId}
+            onChange={(e) => setLearnerId(e.target.value)}
+            className="border border-white/10 bg-gray-800 text-white p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-amber-400/60"
+            required
+          >
+            <option value="">— Choose Learner —</option>
+            {learners.map((learner) => (
+              <option key={learner.id} value={learner.id}>
+                {learner.child_name || learner.email}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="bg-amber-500 text-white w-full py-2 rounded hover:bg-amber-600"
-        >
-          {isLoading ? 'Uploading...' : 'Upload Report'}
-        </button>
+        <div>
+          <label className="block text-sm font-medium mb-1">Term *</label>
+          <select
+            value={term}
+            onChange={(e) => setTerm(e.target.value)}
+            className="border border-white/10 bg-gray-800 text-white p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-amber-400/60"
+            required
+          >
+            {['Term 1', 'Term 2', 'Term 3', 'Term 4'].map((t) => (
+              <option key={t} value={t}>{t}</option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Year *</label>
+          <input
+            type="number"
+            inputMode="numeric"
+            value={year}
+            onChange={(e) => setYear(e.target.value)}
+            className="border border-white/10 bg-gray-800 text-white p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-amber-400/60"
+            required
+          />
+        </div>
+
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium mb-1">Subject (optional)</label>
+          <input
+            type="text"
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+            className="border border-white/10 bg-gray-800 text-white p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-amber-400/60"
+            placeholder="e.g., Mathematics"
+          />
+        </div>
+
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium mb-1">File *</label>
+          <input
+            type="file"
+            onChange={(e) => setFile(e.target.files[0])}
+            className="border border-white/10 bg-gray-800 text-white p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-amber-400/60"
+            required
+          />
+        </div>
+
+        <div className="md:col-span-2">
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="bg-amber-500 text-gray-900 font-semibold px-4 py-2 rounded hover:bg-amber-400 transition disabled:opacity-50"
+          >
+            {isLoading ? 'Uploading…' : 'Upload Report'}
+          </button>
+        </div>
       </form>
+
+      {/* Reports List */}
+      <h3 className="text-lg font-semibold mb-3">Recent Reports</h3>
+      {isLoading && <p className="text-gray-300">Loading…</p>}
+      <ul className="space-y-2">
+        {reports.map((report) => (
+          <li
+            key={report.id}
+            className="border border-white/10 bg-gray-800 text-white p-3 rounded flex justify-between items-center"
+          >
+            <div className="min-w-0">
+              <div className="font-semibold truncate">{report.title}</div>
+              <div className="text-xs text-gray-400 mt-1 flex items-center gap-2">
+                {report.year && <Badge>{report.year}</Badge>}
+                {report.term && <Badge>{report.term}</Badge>}
+                {report.subject && <Badge>{report.subject}</Badge>}
+              </div>
+            </div>
+            {report.url && (
+              <a
+                href={report.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-amber-400 hover:text-amber-300 font-medium shrink-0"
+              >
+                Download →
+              </a>
+            )}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
 
-export default PupilReportUploadForm;
+export default AdminReports;

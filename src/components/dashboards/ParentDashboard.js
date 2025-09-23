@@ -1,7 +1,8 @@
-// src/pages/ParentDashboard.js
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ModalComponent from "../ModalComponent";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
 import ParentSidebar from "./features/parent/Sidebar";
 import Header from "./features/parent/Header";
 import CalendarSection from "./features/student/CalenderSection";
@@ -9,7 +10,11 @@ import WelcomeSection from "./features/student/WelcomeSection";
 import ReportsSection from "./features/parent/Reports";
 import StudentProfileSection from "./features/student/ProfileSection";
 import NotificationsSection from "./features/student/Notifications";
-import ResourcesSection from "./features/parent/ResourcesSection"; // ✅ NEW
+import ResourcesSection from "./features/parent/ResourcesSection";
+
+import { logoutUser } from "../../redux/auth/logoutSlice";
+import { fetchProfile } from "../../redux/profileSlice";
+
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -22,6 +27,13 @@ const ParentDashboard = () => {
   const [notifications, setNotifications] = useState([]);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const profile = useSelector((state) => state.profile?.data);
+
+  useEffect(() => {
+    dispatch(fetchProfile());
+  }, [dispatch]);
 
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => {
@@ -37,8 +49,17 @@ const ParentDashboard = () => {
   };
 
   const handleLogout = () => {
-    navigate("/");
+    dispatch(logoutUser()).then(() => {
+      navigate("/login");
+    });
   };
+
+  const resolvedName =
+    profile?.parent_name ||
+    profile?.child_name ||
+    profile?.name ||
+    JSON.parse(localStorage.getItem("user") || "{}")?.email ||
+    "Parent";
 
   const renderContent = () => {
     const contentMap = {
@@ -53,7 +74,7 @@ const ParentDashboard = () => {
           openModal={openModal}
         />
       ),
-      Resources: <ResourcesSection profile={{ role: "parent" }} />, // ✅ NEW
+      Resources: <ResourcesSection profile={{ role: "parent" }} />,
     };
 
     return contentMap[selectedOption] || <WelcomeSection />;
@@ -70,8 +91,7 @@ const ParentDashboard = () => {
         <div className="flex-1 p-4 lg:p-8 pt-20 lg:pt-24">
           <Header
             handleLogout={handleLogout}
-            profile={{ name: "Parent" }} // fallback profile
-            notifications={notifications}
+            profile={{ name: resolvedName }}
           />
           <div className="bg-secondary shadow-lg rounded-lg p-4 lg:p-6 flex-grow">
             {renderContent()}

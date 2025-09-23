@@ -4,6 +4,8 @@ import loginReducer from './auth/loginSlice';
 import learnerReducer from './admin/learnerFormSlice';
 import reportsReducer from './admin/reportsSlice';
 import resourcesReducer from './parent/resourcesSlice';
+import logoutReducer from './auth/logoutSlice';
+import profileReducer from './profileSlice';
 
 const store = configureStore({
   reducer: {
@@ -12,6 +14,8 @@ const store = configureStore({
     learners: learnerReducer,
     reports: reportsReducer,
     resources: resourcesReducer,
+    logout: logoutReducer,
+    profile: profileReducer,
   },
 });
 

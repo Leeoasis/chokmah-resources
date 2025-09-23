@@ -1,112 +1,132 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+// Upload a report (admin only)
 export const uploadReport = createAsyncThunk(
   'reports/upload',
   async (reportData, thunkAPI) => {
-    const token = localStorage.getItem('token');
-    const response = await axios.post('http://localhost:3000/api/v1/users/reports', reportData, {
-      headers: {
-        'Authorization': token,
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    return response.data;
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        'http://localhost:3000/api/v1/users/reports',
+        reportData,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`, // ✅ fixed
+            'Content-Type': 'multipart/form-data',
+            'Accept': 'application/json',
+          },
+        }
+      );
+      return response.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response?.data || err.message);
+    }
   }
 );
 
+// Fetch reports (parent, learner, or admin)
+export const fetchReports = createAsyncThunk(
+  'reports/fetch',
+  async (_, thunkAPI) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(
+        'http://localhost:3000/api/v1/users/reports',
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`, // ✅ fixed
+            'Accept': 'application/json',
+          },
+        }
+      );
+      return response.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
+// Fetch learners (admin only)
 export const fetchLearners = createAsyncThunk(
   'reports/fetchLearners',
   async (_, thunkAPI) => {
-    const token = localStorage.getItem('token');
-    const response = await axios.get('http://localhost:3000/api/v1/users/learners', {
-      headers: { Authorization: token }
-    });
-    return response.data;
-  }
-);
-
-export const fetchReports = createAsyncThunk(
-  'reports/fetchReports',
-  async (_, thunkAPI) => {
-    const token = localStorage.getItem('token');
-    const invitation_token = localStorage.getItem('invitation_token');
-
-    const headers = {};
-    if (token) {
-      headers['Authorization'] = token;
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(
+        'http://localhost:3000/api/v1/users/learners',
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`, // ✅ fixed
+            'Accept': 'application/json',
+          },
+        }
+      );
+      return response.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response?.data || err.message);
     }
-
-    const url = invitation_token
-      ? `http://localhost:3000/api/v1/users/reports?invitation_token=${invitation_token}`
-      : `http://localhost:3000/api/v1/users/reports`;
-
-    const response = await axios.get(url, { headers });
-    return response.data;
   }
 );
-
 
 const reportsSlice = createSlice({
   name: 'reports',
   initialState: {
-    learners: [],
     reports: [],
+    learners: [],
     isLoading: false,
-    success: false,
     error: null,
+    successMessage: null,
   },
   reducers: {
-    clearReportState: (state) => {
-      state.isLoading = false;
-      state.success = false;
-      state.error = null;
+    clearSuccessMessage: (state) => {
+      state.successMessage = null;
     },
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(uploadReport.pending, (state) => {
-        state.isLoading = true;
-        state.success = false;
-        state.error = null;
-      })
-      .addCase(uploadReport.fulfilled, (state) => {
-        state.isLoading = false;
-        state.success = true;
-      })
-      .addCase(uploadReport.rejected, (state, action) => {
-        state.isLoading = false;
-        state.success = false;
-        state.error = action.error.message;
-      })
+    // Upload report
+    builder.addCase(uploadReport.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(uploadReport.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.successMessage = 'Report uploaded successfully!';
+    });
+    builder.addCase(uploadReport.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload || action.error.message;
+    });
 
-      .addCase(fetchLearners.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(fetchLearners.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.learners = action.payload;
-      })
-      .addCase(fetchLearners.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.error.message;
-      })
+    // Fetch reports
+    builder.addCase(fetchReports.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(fetchReports.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.reports = action.payload;
+    });
+    builder.addCase(fetchReports.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload || action.error.message;
+    });
 
-      .addCase(fetchReports.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(fetchReports.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.reports = action.payload;
-      })
-      .addCase(fetchReports.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.error.message;
-      });
+    // Fetch learners
+    builder.addCase(fetchLearners.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(fetchLearners.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.learners = action.payload;
+    });
+    builder.addCase(fetchLearners.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload || action.error.message;
+    });
   },
 });
 
-export const { clearReportState } = reportsSlice.actions;
+export const { clearSuccessMessage } = reportsSlice.actions;
 export default reportsSlice.reducer;

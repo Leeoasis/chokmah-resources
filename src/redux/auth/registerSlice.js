@@ -4,41 +4,46 @@ import axios from 'axios';
 export const fetchreg = createAsyncThunk(
   'sign_up/fetchregistration',
   async (userFormData) => {
-    const url = 'http://localhost:3000/api/v1/users/signup';
+    const url = 'http://localhost:3000/api/v1/users';
     const response = await axios.post(url, userFormData, {
       headers: {
         'Content-Type': 'multipart/form-data',
+        Accept: 'application/json',
       },
     });
 
-    localStorage.setItem('token', response.headers['Authorization']);
-    localStorage.setItem('user', JSON.stringify(response.data.data));
+    const authHeader =
+      response.headers['authorization'] || response.headers['Authorization'];
+    const token = authHeader?.split(' ')[1] || response.data?.token;
 
-    return response.data.data; // Needed for unwrap()
+    if (token) {
+      localStorage.setItem('token', token);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
+
+    localStorage.setItem('user', JSON.stringify(response.data.data));
+    return response.data.data;
   }
 );
 
-const initialState = {
-  sign_up: {},
-  error: undefined,
-  isLoading: false,
-};
+const initialState = { sign_up: {}, error: null, isLoading: false };
 
 const registrationSlice = createSlice({
   name: 'sign_up',
   initialState,
   extraReducers: (builder) => {
-    builder.addCase(fetchreg.pending, (state) => {
-      state.isLoading = true;
-    });
-    builder.addCase(fetchreg.fulfilled, (state, action) => {
-      state.isLoading = false;
-      state.sign_up = action.payload;
-    });
-    builder.addCase(fetchreg.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.error.message;
-    });
+    builder
+      .addCase(fetchreg.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchreg.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.sign_up = action.payload;
+      })
+      .addCase(fetchreg.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      });
   },
 });
 

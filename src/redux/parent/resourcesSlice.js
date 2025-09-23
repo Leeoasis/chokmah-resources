@@ -1,85 +1,104 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
 
-// ✅ GET all resources (role-based filtering happens server-side)
+/**
+ * GET /api/v1/users/resources
+ * (parent -> child's resources, learner -> own, admin -> all)
+ */
 export const fetchResources = createAsyncThunk(
-  "resources/fetchResources",
-  async (_, { rejectWithValue }) => {
+  'resources/fetchResources',
+  async (_, thunkAPI) => {
     try {
-      const response = await axios.get("/api/v1/users/resources");
-      return response.data;
+      const token = localStorage.getItem('token');
+      const res = await axios.get('/api/v1/users/resources', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+        },
+      });
+      return res.data;
     } catch (err) {
-      return rejectWithValue(err.response?.data?.error || "Failed to fetch resources");
+      return thunkAPI.rejectWithValue(
+        err?.response?.data || { error: 'Failed to fetch resources' }
+      );
     }
   }
 );
 
-// ✅ POST upload resource (admin only)
+/**
+ * POST /api/v1/users/resources
+ * Body: FormData with resource[title], resource[file], resource[learner_id], (optional) resource[description], resource[subject], resource[grade]
+ * (admin only)
+ */
 export const uploadResource = createAsyncThunk(
-  "resources/uploadResource",
-  async (formData, { rejectWithValue }) => {
+  'resources/uploadResource',
+  async (formData, thunkAPI) => {
     try {
-      const response = await axios.post("/api/v1/users/resources", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const token = localStorage.getItem('token');
+      const res = await axios.post('/api/v1/users/resources', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+          Accept: 'application/json',
+        },
       });
-      return response.data; // backend returns full resource JSON
+      return res.data; // returns the created resource JSON
     } catch (err) {
-      return rejectWithValue(err.response?.data?.error || "Failed to upload resource");
+      return thunkAPI.rejectWithValue(
+        err?.response?.data || { error: 'Failed to upload resource' }
+      );
     }
   }
 );
 
 const resourcesSlice = createSlice({
-  name: "resources",
+  name: 'resources',
   initialState: {
-    resources: [],
+    items: [],
     isLoading: false,
     error: null,
-    success: false,          // ✅ add success flag
     successMessage: null,
   },
   reducers: {
-    clearResourceMessages: (state) => {
+    clearResourcesSuccess(state) {
       state.successMessage = null;
-      state.error = null;
-      state.success = false; // ✅ reset success flag
     },
   },
   extraReducers: (builder) => {
-    builder
-      // Fetch resources
-      .addCase(fetchResources.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(fetchResources.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.resources = action.payload;
-      })
-      .addCase(fetchResources.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload;
-      })
+    // fetchResources
+    builder.addCase(fetchResources.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(fetchResources.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.items = action.payload || [];
+    });
+    builder.addCase(fetchResources.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload || action.error.message;
+    });
 
-      // Upload resource
-      .addCase(uploadResource.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-        state.success = false;
-      })
-      .addCase(uploadResource.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.resources.push(action.payload);
-        state.success = true; // ✅ mark success
-        state.successMessage = "Resource uploaded successfully!";
-      })
-      .addCase(uploadResource.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload;
-        state.success = false;
-      });
+    // uploadResource
+    builder.addCase(uploadResource.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+      state.successMessage = null;
+    });
+    builder.addCase(uploadResource.fulfilled, (state, action) => {
+      state.isLoading = false;
+      // Optimistically add the new resource to the list
+      if (action.payload && typeof action.payload === 'object') {
+        state.items = [action.payload, ...state.items];
+      }
+      state.successMessage = 'Resource uploaded successfully!';
+    });
+    builder.addCase(uploadResource.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload || action.error.message;
+    });
   },
 });
 
-export const { clearResourceMessages } = resourcesSlice.actions;
+export const { clearResourcesSuccess } = resourcesSlice.actions;
 export default resourcesSlice.reducer;
