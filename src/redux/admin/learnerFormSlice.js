@@ -4,7 +4,7 @@ import axios from 'axios';
 export const createLearner = createAsyncThunk(
   'learners/create',
   async (learnerData, thunkAPI) => {
-    const response = await axios.post('http://localhost:3000/api/v1/users/learners', {
+    const response = await axios.post('https://chokmah-resources-backend.onrender.com/api/v1/users/learners', {
       learner: {
         ...learnerData,
         role: 'learner',

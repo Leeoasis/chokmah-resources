@@ -4,7 +4,7 @@ import axios from 'axios';
 export const logoutUser = createAsyncThunk('auth/logoutUser', async () => {
   try {
     const token = localStorage.getItem('token');
-    await axios.delete('http://localhost:3000/api/v1/users/logout', {
+    await axios.delete('https://chokmah-resources-backend.onrender.com/api/v1/users/logout', {
       headers: {
         Accept: 'application/json',
         Authorization: `Bearer ${token}`,

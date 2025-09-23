@@ -10,7 +10,7 @@ export const fetchResources = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('/api/v1/users/resources', {
+      const res = await axios.get('https://chokmah-resources-backend.onrender.com/api/v1/users/resources', {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: 'application/json',

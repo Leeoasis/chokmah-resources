@@ -11,7 +11,7 @@ export const fetchProfile = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('/api/v1/users/profile', {
+      const res = await axios.get('https://chokmah-resources-backend.onrender.com/api/v1/users/profile', {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: 'application/json',

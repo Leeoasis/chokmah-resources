@@ -6,7 +6,7 @@ export const fetchStudentById = createAsyncThunk(
   'student/fetchStudentById',
   async (studentId, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`/students/${studentId}`);
+      const response = await axiosInstance.get(`https://chokmah-resources-backend.onrender.com/students/${studentId}`);
       return response.data;
     } catch (err) {
       notifyError("Failed to fetch student data.");

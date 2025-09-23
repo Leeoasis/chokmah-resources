@@ -4,7 +4,7 @@ import axios from 'axios';
 export const loginUser = createAsyncThunk(
   'login/loginUser',
   async (userCredentials) => {
-    const url = 'http://localhost:3000/api/v1/users/login';
+    const url = 'https://chokmah-resources-backend.onrender.com/api/v1/users/login';
     const response = await axios.post(url, userCredentials, {
       headers: { Accept: 'application/json' },
     });

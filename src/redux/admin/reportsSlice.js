@@ -8,7 +8,7 @@ export const uploadReport = createAsyncThunk(
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        'http://localhost:3000/api/v1/users/reports',
+        'https://chokmah-resources-backend.onrender.com/api/v1/users/reports',
         reportData,
         {
           headers: {
@@ -32,7 +32,7 @@ export const fetchReports = createAsyncThunk(
     try {
       const token = localStorage.getItem('token');
       const response = await axios.get(
-        'http://localhost:3000/api/v1/users/reports',
+        'https://chokmah-resources-backend.onrender.com/api/v1/users/reports',
         {
           headers: {
             'Authorization': `Bearer ${token}`, // ✅ fixed
@@ -54,7 +54,7 @@ export const fetchLearners = createAsyncThunk(
     try {
       const token = localStorage.getItem('token');
       const response = await axios.get(
-        'http://localhost:3000/api/v1/users/learners',
+        'https://chokmah-resources-backend.onrender.com/api/v1/users/learners',
         {
           headers: {
             'Authorization': `Bearer ${token}`, // ✅ fixed
