@@ -1,4 +1,3 @@
-// src/pages/.../CreateLearnerForm.js
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -13,6 +12,8 @@ const CreateLearnerForm = () => {
     child_name: "",
     child_grade: "",
   });
+
+  const [copied, setCopied] = useState(false);
 
   const { invitationToken, isLoading, error, success } = useSelector(
     (state) => state.learners
@@ -32,10 +33,24 @@ const CreateLearnerForm = () => {
   };
 
   useEffect(() => {
+    if (success) {
+      // ✅ Clear form after successful creation
+      setFormData({ child_name: "", child_grade: "" });
+      setCopied(false); // reset copy state
+    }
+  }, [success]);
+
+  useEffect(() => {
     return () => {
       dispatch(clearLearnerState());
     };
   }, [dispatch]);
+
+  const handleCopy = () => {
+    navigator.clipboard?.writeText(invitationToken || "");
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000); // reset after 2s
+  };
 
   return (
     <div className="p-6 bg-gray-900 text-white rounded-2xl border border-white/10 max-w-xl mx-auto mt-6">
@@ -85,9 +100,6 @@ const CreateLearnerForm = () => {
             required
             className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400/60"
           />
-          <p className="mt-1 text-xs text-gray-500">
-            Tip: Use a clear format like <span className="text-gray-300">“Grade 7”</span> or <span className="text-gray-300">“Grade R”</span>.
-          </p>
         </div>
 
         <button
@@ -108,10 +120,14 @@ const CreateLearnerForm = () => {
             </code>
             <button
               type="button"
-              onClick={() => navigator.clipboard?.writeText(invitationToken || "")}
-              className="shrink-0 px-3 py-2 rounded-xl border border-amber-400 text-amber-200 hover:bg-amber-400/10 transition"
+              onClick={handleCopy}
+              className={`shrink-0 px-3 py-2 rounded-xl border ${
+                copied
+                  ? "border-green-400 text-green-200 bg-green-900/40"
+                  : "border-amber-400 text-amber-200 hover:bg-amber-400/10"
+              } transition`}
             >
-              Copy
+              {copied ? "Copied!" : "Copy"}
             </button>
           </div>
           <p className="text-xs text-gray-500 mt-2">

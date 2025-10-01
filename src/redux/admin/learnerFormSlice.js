@@ -4,18 +4,17 @@ import axios from 'axios';
 export const createLearner = createAsyncThunk(
   'learners/create',
   async (learnerData, thunkAPI) => {
-    const response = await axios.post('https://chokmah-resources-backend.onrender.com/api/v1/users/learners', {
-      learner: {
-        ...learnerData,
-        role: 'learner',
-        password: Math.random().toString(36).slice(-8),
-        password_confirmation: Math.random().toString(36).slice(-8),
-      },
-    });
-    return response.data;
+    try {
+      const response = await axios.post(
+        'https://chokmah-resources-backend.onrender.com/api/v1/users/learners',
+        { learner: learnerData }
+      );
+      return response.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response?.data?.errors || "Something went wrong");
+    }
   }
 );
-
 
 const learnerSlice = createSlice({
   name: 'learners',
@@ -47,7 +46,7 @@ const learnerSlice = createSlice({
       })
       .addCase(createLearner.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message;
+        state.error = action.payload || action.error.message;
         state.success = false;
       });
   },
