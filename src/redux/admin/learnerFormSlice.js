@@ -11,7 +11,10 @@ export const createLearner = createAsyncThunk(
       );
       return response.data;
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.response?.data?.errors || "Something went wrong");
+      // ✅ Pass Rails validation errors back
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.errors || ["Something went wrong"]
+      );
     }
   }
 );
@@ -46,7 +49,7 @@ const learnerSlice = createSlice({
       })
       .addCase(createLearner.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload || action.error.message;
+        state.error = action.payload; // ✅ Now contains Rails validation errors
         state.success = false;
       });
   },

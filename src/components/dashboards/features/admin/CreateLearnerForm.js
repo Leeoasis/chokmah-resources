@@ -47,9 +47,14 @@ const CreateLearnerForm = () => {
   }, [dispatch]);
 
   const handleCopy = () => {
-    navigator.clipboard?.writeText(invitationToken || "");
+    if (!invitationToken) return;
+    navigator.clipboard?.writeText(invitationToken);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000); // reset after 2s
+
+    // Reset after 2 seconds
+    setTimeout(() => {
+      setCopied(false);
+    }, 2000);
   };
 
   return (
@@ -67,9 +72,18 @@ const CreateLearnerForm = () => {
           Learner created successfully. Invitation token generated below.
         </div>
       )}
+
       {error && (
         <div className="mb-4 p-3 rounded border border-red-700 bg-red-900/30 text-red-200">
-          {String(error)}
+          {Array.isArray(error) ? (
+            <ul className="list-disc ml-4">
+              {error.map((err, i) => (
+                <li key={i}>{err}</li>
+              ))}
+            </ul>
+          ) : (
+            error
+          )}
         </div>
       )}
 
@@ -121,13 +135,14 @@ const CreateLearnerForm = () => {
             <button
               type="button"
               onClick={handleCopy}
-              className={`shrink-0 px-3 py-2 rounded-xl border ${
+              disabled={!invitationToken}
+              className={`shrink-0 px-3 py-2 rounded-xl border transition ${
                 copied
                   ? "border-green-400 text-green-200 bg-green-900/40"
                   : "border-amber-400 text-amber-200 hover:bg-amber-400/10"
-              } transition`}
+              }`}
             >
-              {copied ? "Copied!" : "Copy"}
+              {copied ? "✔ Copied!" : "Copy"}
             </button>
           </div>
           <p className="text-xs text-gray-500 mt-2">
