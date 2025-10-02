@@ -45,11 +45,12 @@ const learnerSlice = createSlice({
       .addCase(createLearner.fulfilled, (state, action) => {
         state.isLoading = false;
         state.success = true;
-        state.invitationToken = action.payload.invitation_token;
+        // ✅ Correct path: token is inside action.payload.learner
+        state.invitationToken = action.payload.learner?.invitation_token || '';
       })
       .addCase(createLearner.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload; // ✅ Now contains Rails validation errors
+        state.error = action.payload; // ✅ Rails validation errors
         state.success = false;
       });
   },
