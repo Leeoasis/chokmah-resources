@@ -12,6 +12,7 @@ import ReportsSection from "./features/admin/AdminReports";
 import StudentProfileSection from "./features/student/ProfileSection";
 import NotificationsSection from "./features/student/Notifications";
 import ResourcesSection from "./features/admin/AdminResources";
+import AdminLearners from "./features/admin/AdminLearners";   // ✅ new import
 
 import { logoutUser } from "../../redux/auth/logoutSlice";
 import { fetchProfile } from "../../redux/profileSlice";
@@ -65,6 +66,7 @@ const AdminDashboard = () => {
   const renderContent = () => {
     const contentMap = {
       "Create Learner": <CreateLearnerForm />,
+      Learners: <AdminLearners />,                 // ✅ new section
       Reports: <ReportsSection />,
       Resources: <ResourcesSection />,
       Profile: <StudentProfileSection />,

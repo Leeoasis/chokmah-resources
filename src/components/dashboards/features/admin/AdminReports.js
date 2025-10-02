@@ -1,12 +1,11 @@
-// AdminReports.js
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   uploadReport,
   fetchReports,
-  fetchLearners,
   clearSuccessMessage,
 } from '../../../../redux/admin/reportsSlice';
+import { fetchLearners } from '../../../../redux/admin/adminLearnerSlice';
 
 const Badge = ({ children }) => (
   <span className="text-[10px] px-2 py-0.5 rounded-full border border-amber-400/60 bg-amber-400/10 text-amber-200">
@@ -16,17 +15,17 @@ const Badge = ({ children }) => (
 
 const AdminReports = () => {
   const dispatch = useDispatch();
-  const { reports = [], learners = [], isLoading, error, successMessage } = useSelector(
+  const { reports = [], isLoading, error, successMessage } = useSelector(
     (state) => state.reports || {}
   );
+  const { learners = [] } = useSelector((state) => state.adminLearners || {});
 
-  // New fields for consistency with parent Year→Term grouping
   const [title, setTitle] = useState('');
   const [file, setFile] = useState(null);
   const [learnerId, setLearnerId] = useState('');
   const [term, setTerm] = useState('Term 1');
   const [year, setYear] = useState(String(new Date().getFullYear()));
-  const [subject, setSubject] = useState(''); // optional but useful
+  const [subject, setSubject] = useState('');
 
   useEffect(() => {
     dispatch(fetchReports());
@@ -65,7 +64,6 @@ const AdminReports = () => {
     <div className="p-6 bg-gray-900 text-white rounded-2xl border border-white/10">
       <h2 className="text-2xl font-bold mb-4 text-amber-400">Admin — Upload Reports</h2>
 
-      {/* Success & error messages */}
       {successMessage && (
         <div className="mb-4 p-3 rounded border border-green-600 bg-green-900/30 text-green-200">
           {successMessage}{' '}
@@ -177,24 +175,22 @@ const AdminReports = () => {
       {isLoading && <p className="text-gray-300">Loading…</p>}
       <ul className="space-y-2">
         {reports.map((report) => (
-          <li
-            key={report.id}
-            className="border border-white/10 bg-gray-800 text-white p-3 rounded flex justify-between items-center"
-          >
-            <div className="min-w-0">
-              <div className="font-semibold truncate">{report.title}</div>
-              <div className="text-xs text-gray-400 mt-1 flex items-center gap-2">
-                {report.year && <Badge>{report.year}</Badge>}
-                {report.term && <Badge>{report.term}</Badge>}
-                {report.subject && <Badge>{report.subject}</Badge>}
-              </div>
+          <li key={report.id} className="border border-white/10 bg-gray-800 p-3 rounded">
+            <div className="font-semibold">{report.title}</div>
+            <div className="text-xs text-gray-400 mt-1 flex items-center gap-2">
+              {report.year && <Badge>{report.year}</Badge>}
+              {report.term && <Badge>{report.term}</Badge>}
+              {report.subject && <Badge>{report.subject}</Badge>}
+            </div>
+            <div className="text-xs text-gray-400 mt-1">
+              Learner: {report.learner_name || 'Unknown'}
             </div>
             {report.url && (
               <a
                 href={report.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-amber-400 hover:text-amber-300 font-medium shrink-0"
+                className="text-amber-400 hover:text-amber-300 font-medium"
               >
                 Download →
               </a>
