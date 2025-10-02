@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-// fetch learners (reused) + upload resource actions
-import { fetchLearners } from "../../../../redux/admin/reportsSlice";
+// ✅ Correct: fetch learners from adminLearnerSlice
+import { fetchLearners } from "../../../../redux/admin/adminLearnerSlice";
 import {
   uploadResource,
   clearResourcesSuccess,
@@ -23,14 +23,14 @@ const AdminResourceUploadForm = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [subject, setSubject] = useState("");
-  const [resourceType, setResourceType] = useState("Homework"); // ✅ NEW
+  const [resourceType, setResourceType] = useState("Homework");
   const [term, setTerm] = useState("Term 1");
   const [year, setYear] = useState(String(new Date().getFullYear()));
   const [file, setFile] = useState(null);
 
-  // Learners from reports slice
+  // ✅ Learners from adminLearners slice
   const { learners = [], isLoading: learnersLoading, error: learnersError } =
-    useSelector((state) => state.reports || {});
+    useSelector((state) => state.adminLearners || {});
 
   // Resources slice (upload + messages)
   const {
@@ -59,7 +59,7 @@ const AdminResourceUploadForm = () => {
     formData.append("resource[title]", title);
     if (description) formData.append("resource[description]", description);
     if (subject) formData.append("resource[subject]", subject);
-    if (resourceType) formData.append("resource[resource_type]", resourceType); // ✅ NEW
+    if (resourceType) formData.append("resource[resource_type]", resourceType);
     if (term) formData.append("resource[term]", term);
     if (year) formData.append("resource[year]", year);
     formData.append("resource[file]", file);
@@ -179,7 +179,6 @@ const AdminResourceUploadForm = () => {
           />
         </div>
 
-        {/* ✅ Resource Type */}
         <div>
           <label className="block text-sm font-medium mb-1">
             Resource Type *
@@ -250,7 +249,6 @@ const AdminResourceUploadForm = () => {
         </div>
       </form>
 
-      {/* Recent uploads preview */}
       {items.length > 0 && (
         <>
           <h3 className="text-lg font-semibold mt-8 mb-3">
