@@ -33,6 +33,22 @@ const AdminLearners = () => {
     setEditingId(null);
   };
 
+  const handleDelete = async (learner) => {
+    const hasAssociations = learner.reports?.length > 0 || learner.resources?.length > 0;
+    const confirmMessage = hasAssociations
+      ? `This learner has ${learner.reports?.length || 0} reports and ${learner.resources?.length || 0} resources. Are you sure you want to delete? This action cannot be undone.`
+      : `Are you sure you want to delete ${learner.child_name}?`;
+
+    if (window.confirm(confirmMessage)) {
+      try {
+        await dispatch(deleteLearner(learner.id)).unwrap();
+      } catch (error) {
+        // Error is already handled by the slice and shown in the UI
+        console.error('Delete failed:', error);
+      }
+    }
+  };
+
   return (
     <div className="p-6 bg-gray-900 text-white rounded-xl border border-white/10">
       <h2 className="text-xl font-bold mb-4 text-amber-400">Learners</h2>
@@ -85,7 +101,13 @@ const AdminLearners = () => {
               </div>
             ) : (
               <>
-                <span>{learner.child_name} (Grade {learner.child_grade})</span>
+                <div>
+                  <span className="font-medium">{learner.child_name}</span>
+                  <span className="text-gray-400 text-sm block">Grade {learner.child_grade}</span>
+                  {learner.teacher_name && (
+                    <span className="text-amber-400 text-sm block">Teacher: {learner.teacher_name}</span>
+                  )}
+                </div>
                 <div className="flex gap-2">
                   <button
                     onClick={() => setViewingLearner(learner)}
@@ -100,7 +122,7 @@ const AdminLearners = () => {
                     Edit
                   </button>
                   <button
-                    onClick={() => dispatch(deleteLearner(learner.id))}
+                    onClick={() => handleDelete(learner)}
                     className="text-red-400 hover:text-red-300"
                   >
                     Delete

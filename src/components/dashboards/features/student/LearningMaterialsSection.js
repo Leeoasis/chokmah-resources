@@ -1,64 +1,32 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchResources } from "../../../../redux/parent/resourcesSlice";
 
-const learningCategories = [
-  "Mathematics",
-  "Science",
-  "History",
-  "Languages",
-  "Computer Science",
-];
-
-const sampleMaterials = [
-  {
-    id: 1,
-    title: "Algebra Basics",
-    description: "Introduction to algebraic expressions and equations.",
-    category: "Mathematics",
-    url: "https://example.com/algebra-basics",
-  },
-  {
-    id: 2,
-    title: "Newton's Laws",
-    description: "Fundamentals of motion and forces.",
-    category: "Science",
-    url: "https://example.com/newtons-laws",
-  },
-  {
-    id: 3,
-    title: "World War II Overview",
-    description: "Major events and consequences of WWII.",
-    category: "History",
-    url: "https://example.com/ww2-overview",
-  },
-  {
-    id: 4,
-    title: "Spanish for Beginners",
-    description: "Basic Spanish vocabulary and grammar.",
-    category: "Languages",
-    url: "https://example.com/spanish-beginners",
-  },
-  {
-    id: 5,
-    title: "Intro to Python",
-    description: "Learn Python programming from scratch.",
-    category: "Computer Science",
-    url: "https://example.com/intro-python",
-  },
-];
-
-const LearningMaterialsSection = ({ materials = sampleMaterials }) => {
+const LearningMaterialsSection = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
 
+  const dispatch = useDispatch();
+  const { items: materials = [], isLoading, error } = useSelector((state) => state.resources || {});
+
+  useEffect(() => {
+    dispatch(fetchResources());
+  }, [dispatch]);
+
   const filteredMaterials = materials.filter((material) => {
     const matchesCategory = selectedCategory
-      ? material.category === selectedCategory
+      ? material.subject === selectedCategory
       : true;
     const matchesSearch = material.title
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
     return matchesCategory && matchesSearch;
   });
+
+  const learningCategories = [...new Set(materials.map(m => m.subject).filter(Boolean))];
+
+  if (isLoading) return <p className="text-white">Loading materials...</p>;
+  if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (
     <div className="p-4">
@@ -95,23 +63,26 @@ const LearningMaterialsSection = ({ materials = sampleMaterials }) => {
         <p className="text-white">No materials found.</p>
       ) : (
         <ul className="space-y-4">
-          {filteredMaterials.map(({ id, title, description, category, url }) => (
+          {filteredMaterials.map((material) => (
             <li
-              key={id}
+              key={material.id}
               className="bg-secondary-light p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-primary"
             >
-              <a
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary font-semibold text-lg hover:underline"
-              >
-                {title}
-              </a>
-              <p className="text-white mt-1">{description}</p>
+              <h3 className="text-primary font-semibold text-lg">{material.title}</h3>
+              <p className="text-white mt-1">{material.description}</p>
               <p className="text-olive-green mt-2 font-medium">
-                Category: {category}
+                Subject: {material.subject} | Type: {material.resource_type}
               </p>
+              {material.file_url && (
+                <a
+                  href={material.file_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400 hover:underline mt-2 inline-block"
+                >
+                  Download/View Material
+                </a>
+              )}
             </li>
           ))}
         </ul>

@@ -2,12 +2,15 @@ import React from "react";
 
 const AdminSidebar = ({ selectedOption, setSelectedOption }) => {
   const options = [
+    "Create Teacher",
+    "Teachers",
     "Create Learner",
     "Learners",     // ✅ new section
     "Reports",
     "Resources",
     "Profile",
     "Notifications",
+    "Calendar",
   ];
 
   return (

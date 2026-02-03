@@ -189,9 +189,9 @@ const ResourcesSection = () => {
                               {resource.resource_type && <span>• {resource.resource_type}</span>}
                               {uploaded && <span>• {uploaded}</span>}
                             </div>
-                            {resource.learner_name && (
-                              <div className="text-xs text-gray-500 mt-1">
-                                For: {resource.learner_name}
+                            {resource.teacher_name && (
+                              <div className="text-sm text-gray-400">
+                                For: {resource.teacher_name}
                               </div>
                             )}
                             {resource.url && (

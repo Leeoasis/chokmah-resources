@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { fetchreg } from '../../redux/auth/registerSlice';
 import Navbar from '../landingSite/Navbar';
-import Footer from '../landingSite/Footer';
+
 import RegisterBackground from '../../assets/images/download.png';
 
 const Register = () => {
@@ -33,7 +33,7 @@ const Register = () => {
     if (formData.invitation_token.trim()) {
       try {
         const res = await fetch(
-          `https://chokmah-resources-backend.onrender.com/api/v1/users/learner_by_token/${formData.invitation_token}`,
+          `https://chokmah-resources-backend.onrender.com/api/v1/users/teacher_by_token/${formData.invitation_token}`,
           {
             method: 'GET',
             headers: {
@@ -81,8 +81,8 @@ const Register = () => {
         const role = action.payload.role;
         if (role === 'parent') {
           navigate('/parent-dashboard');
-        } else if (role === 'learner') {
-          navigate('/student-dashboard');
+        } else if (role === 'teacher') {
+          navigate('/teacher-dashboard');
         } else if (role === 'admin') {
           navigate('/admin-dashboard');
         } else {
@@ -113,7 +113,7 @@ const Register = () => {
               className="mb-4 p-3 w-full border rounded bg-white"
             >
               <option value="parent">Parent</option>
-              <option value="learner">Learner</option>
+              <option value="teacher">Teacher</option>
             </select>
 
             {formData.role === 'parent' && (
@@ -195,7 +195,6 @@ const Register = () => {
           </form>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };

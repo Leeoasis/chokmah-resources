@@ -1,21 +1,21 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axiosInstance from '../../redux/api/axiosInstance';
 
 export const loginUser = createAsyncThunk(
   'login/loginUser',
   async (userCredentials) => {
-    const url = 'https://chokmah-resources-backend.onrender.com/api/v1/users/login';
-    const response = await axios.post(url, userCredentials, {
-      headers: { Accept: 'application/json' },
-    });
+    const response = await axiosInstance.post(
+      '/api/v1/users/login',
+      userCredentials
+    );
 
     const authHeader =
       response.headers['authorization'] || response.headers['Authorization'];
+
     const token = authHeader?.split(' ')[1] || response.data?.token;
 
     if (token) {
       localStorage.setItem('token', token);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
 
     localStorage.setItem('user', JSON.stringify(response.data.data));
@@ -23,7 +23,11 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-const initialState = { user: {}, error: null, isLoading: false };
+const initialState = {
+  user: {},
+  error: null,
+  isLoading: false,
+};
 
 const loginSlice = createSlice({
   name: 'login',
@@ -32,6 +36,7 @@ const loginSlice = createSlice({
     builder
       .addCase(loginUser.pending, (state) => {
         state.isLoading = true;
+        state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;

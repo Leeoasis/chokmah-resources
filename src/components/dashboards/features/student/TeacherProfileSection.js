@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const AdminProfileSection = ({ profile, onUpdate, loading, error, successMessage }) => {
+const TeacherProfileSection = ({ profile, onUpdate, loading, error, successMessage }) => {
   const [formData, setFormData] = useState({
     name: profile?.name || '',
     email: profile?.email || '',
@@ -39,7 +39,7 @@ const AdminProfileSection = ({ profile, onUpdate, loading, error, successMessage
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold text-primary-light mb-4">Admin Profile</h2>
+      <h2 className="text-2xl font-semibold text-primary-light mb-4">Teacher Profile</h2>
       {loading ? (
         <p>Loading...</p>
       ) : error ? (
@@ -91,4 +91,4 @@ const AdminProfileSection = ({ profile, onUpdate, loading, error, successMessage
   );
 };
 
-export default AdminProfileSection;
+export default TeacherProfileSection;

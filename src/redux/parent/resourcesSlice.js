@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axiosInstance from '../../redux/api/axiosInstance';
 
 /**
  * GET /api/v1/users/resources
@@ -9,13 +9,7 @@ export const fetchResources = createAsyncThunk(
   'resources/fetchResources',
   async (_, thunkAPI) => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get('https://chokmah-resources-backend.onrender.com/api/v1/users/resources', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/json',
-        },
-      });
+      const res = await axiosInstance.get('/api/v1/users/resources');
       return res.data;
     } catch (err) {
       return thunkAPI.rejectWithValue(
@@ -27,22 +21,25 @@ export const fetchResources = createAsyncThunk(
 
 /**
  * POST /api/v1/users/resources
- * Body: FormData with resource[title], resource[file], resource[learner_id], (optional) resource[description], resource[subject], resource[grade]
+ * Body: FormData with
+ * resource[title], resource[file], resource[teacher_id],
+ * (optional) resource[description], resource[subject], resource[grade]
  * (admin only)
  */
 export const uploadResource = createAsyncThunk(
   'resources/uploadResource',
   async (formData, thunkAPI) => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.post('/api/v1/users/resources', formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-          Accept: 'application/json',
-        },
-      });
-      return res.data; // returns the created resource JSON
+      const res = await axiosInstance.post(
+        '/api/v1/users/resources',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+      return res.data; // created resource JSON
     } catch (err) {
       return thunkAPI.rejectWithValue(
         err?.response?.data || { error: 'Failed to upload resource' }
@@ -65,7 +62,9 @@ const resourcesSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // fetchResources
+    // ==============================
+    // FETCH RESOURCES
+    // ==============================
     builder.addCase(fetchResources.pending, (state) => {
       state.isLoading = true;
       state.error = null;
@@ -79,7 +78,9 @@ const resourcesSlice = createSlice({
       state.error = action.payload || action.error.message;
     });
 
-    // uploadResource
+    // ==============================
+    // UPLOAD RESOURCE
+    // ==============================
     builder.addCase(uploadResource.pending, (state) => {
       state.isLoading = true;
       state.error = null;
@@ -87,10 +88,12 @@ const resourcesSlice = createSlice({
     });
     builder.addCase(uploadResource.fulfilled, (state, action) => {
       state.isLoading = false;
-      // Optimistically add the new resource to the list
+
+      // Optimistically prepend new resource
       if (action.payload && typeof action.payload === 'object') {
         state.items = [action.payload, ...state.items];
       }
+
       state.successMessage = 'Resource uploaded successfully!';
     });
     builder.addCase(uploadResource.rejected, (state, action) => {

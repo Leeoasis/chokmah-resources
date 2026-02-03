@@ -1,43 +1,51 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axiosInstance from '../../redux/api/axiosInstance';
 
-const API_BASE = 'https://chokmah-resources-backend.onrender.com/api/v1';
-
-// Upload report
+// =====================================================
+// UPLOAD REPORT
+// =====================================================
 export const uploadReport = createAsyncThunk(
   'reports/upload',
   async (formData, thunkAPI) => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.post(`${API_BASE}/users/reports`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const res = await axiosInstance.post(
+        '/api/v1/users/reports',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
       return res.data;
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.response?.data || err.message);
+      return thunkAPI.rejectWithValue(
+        err.response?.data || err.message
+      );
     }
   }
 );
 
-// Fetch reports
+// =====================================================
+// FETCH REPORTS
+// =====================================================
 export const fetchReports = createAsyncThunk(
   'reports/fetch',
   async (_, thunkAPI) => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get(`${API_BASE}/users/reports`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axiosInstance.get('/api/v1/users/reports');
       return res.data;
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.response?.data || err.message);
+      return thunkAPI.rejectWithValue(
+        err.response?.data || err.message
+      );
     }
   }
 );
 
+// =====================================================
+// SLICE
+// =====================================================
 const reportsSlice = createSlice({
   name: 'reports',
   initialState: {
@@ -53,6 +61,7 @@ const reportsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // UPLOAD
       .addCase(uploadReport.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -65,6 +74,8 @@ const reportsSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload || action.error.message;
       })
+
+      // FETCH
       .addCase(fetchReports.pending, (state) => {
         state.isLoading = true;
         state.error = null;

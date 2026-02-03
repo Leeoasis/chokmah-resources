@@ -5,7 +5,7 @@ import Navbar from './components/landingSite/Navbar';
 import Footer from './components/landingSite/Footer';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
-import StudentDashboard from './components/dashboards/StudentDashboard'; 
+import TeacherDashboard from './components/dashboards/TeacherDashboard'; 
 import AdminDashboard from './components/dashboards/AdminDashboard'; 
 import ParentDashboard from './components/dashboards/ParentDashboard';
 
@@ -17,7 +17,7 @@ function App() {
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
-        <Route path='/student-dashboard' element={<StudentDashboard />} /> 
+        <Route path='/teacher-dashboard' element={<TeacherDashboard />} /> 
         <Route path='/admin-dashboard' element={<AdminDashboard />} />
         <Route path='/parent-dashboard' element={<ParentDashboard />} />
       </Routes>

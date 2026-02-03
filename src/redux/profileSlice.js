@@ -1,22 +1,16 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axiosInstance from '../redux/api/axiosInstance';
 
 /**
  * GET /api/v1/users/profile
  * Expecting JSON with name fields, role, email, etc.
- * Sends Authorization: Bearer <token>
+ * Authorization header is injected automatically by axiosInstance
  */
 export const fetchProfile = createAsyncThunk(
   'profile/fetchProfile',
   async (_, thunkAPI) => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get('https://chokmah-resources-backend.onrender.com/api/v1/users/profile', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/json',
-        },
-      });
+      const res = await axiosInstance.get('/api/v1/users/profile');
       return res.data; // { parent_name, child_name, role, email, ... }
     } catch (err) {
       return thunkAPI.rejectWithValue(
@@ -39,18 +33,19 @@ const profileSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchProfile.pending, (state) => {
-      state.isLoading = true;
-      state.error = null;
-    });
-    builder.addCase(fetchProfile.fulfilled, (state, action) => {
-      state.isLoading = false;
-      state.data = action.payload || null;
-    });
-    builder.addCase(fetchProfile.rejected, (state, action) => {
-      state.isLoading = false;
-      state.error = action.payload || action.error?.message;
-    });
+    builder
+      .addCase(fetchProfile.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchProfile.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.data = action.payload || null;
+      })
+      .addCase(fetchProfile.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload || action.error?.message;
+      });
   },
 });
 

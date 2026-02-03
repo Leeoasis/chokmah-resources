@@ -4,6 +4,7 @@ import {
   createLearner,
   clearLearnerState,
 } from "../../../../redux/admin/learnerFormSlice";
+import { fetchTeachers } from "../../../../redux/admin/adminLearnerSlice";
 
 const CreateLearnerForm = () => {
   const dispatch = useDispatch();
@@ -11,6 +12,7 @@ const CreateLearnerForm = () => {
   const [formData, setFormData] = useState({
     child_name: "",
     child_grade: "",
+    teacher_id: "",
   });
 
   const [copied, setCopied] = useState(false);
@@ -18,6 +20,12 @@ const CreateLearnerForm = () => {
   const { invitationToken, isLoading, error, success } = useSelector(
     (state) => state.learners
   );
+
+  const { teachers } = useSelector((state) => state.adminLearners);
+
+  useEffect(() => {
+    dispatch(fetchTeachers());
+  }, [dispatch]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,16 +37,18 @@ const CreateLearnerForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(createLearner(formData));
+    dispatch(createLearner({ ...formData, role: "learner" }));
   };
 
   useEffect(() => {
     if (success) {
       // ✅ Clear form after successful creation
-      setFormData({ child_name: "", child_grade: "" });
+      setFormData({ child_name: "", child_grade: "", teacher_id: "" });
       setCopied(false); // reset copy state
+      // ✅ Refresh teachers list to update student counts
+      dispatch(fetchTeachers());
     }
-  }, [success]);
+  }, [success, dispatch]);
 
   useEffect(() => {
     return () => {
@@ -114,6 +124,26 @@ const CreateLearnerForm = () => {
             required
             className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400/60"
           />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Assign to Teacher</label>
+          <select
+            name="teacher_id"
+            value={formData.teacher_id}
+            onChange={handleChange}
+            className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-amber-400/60"
+          >
+            <option value="">Select a teacher (optional)</option>
+            {teachers.map((teacher) => (
+              <option key={teacher.id} value={teacher.id}>
+                {teacher.name || teacher.email || `Teacher ${teacher.id}`}
+              </option>
+            ))}
+          </select>
+          <p className="text-xs text-gray-400 mt-1">
+            Leave empty to create learner without teacher assignment
+          </p>
         </div>
 
         <button

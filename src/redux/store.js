@@ -7,6 +7,7 @@ import resourcesReducer from './parent/resourcesSlice';
 import logoutReducer from './auth/logoutSlice';
 import profileReducer from './profileSlice';
 import adminLearnerReducer from './admin/adminLearnerSlice';
+import teacherReducer from './teacherSlice';
 
 const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ const store = configureStore({
     logout: logoutReducer,
     profile: profileReducer,
     adminLearners: adminLearnerReducer,
+    teacher: teacherReducer,
   },
 });
 

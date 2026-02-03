@@ -3,7 +3,6 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../../redux/auth/loginSlice';
 import Navbar from '../landingSite/Navbar';
-import Footer from '../landingSite/Footer';
 import LoginBackground from '../../assets/images/download.png';
 
 const Login = () => {
@@ -44,10 +43,14 @@ const Login = () => {
         // ✅ Navigate based on role
         if (role === 'parent') {
           navigate('/parent-dashboard');
-        } else if (role === 'learner') {
-          navigate('/student-dashboard');
+        } else if (role === 'teacher') {
+          navigate('/teacher-dashboard');
         } else if (role === 'admin') {
           navigate('/admin-dashboard');
+        } else if (role === 'learner') {
+          // Students share access with parents - redirect to login with message
+          alert('Student accounts access resources through their parents. Please contact your parent for access.');
+          navigate('/login');
         } else {
           navigate('/'); // fallback
         }
@@ -95,7 +98,6 @@ const Login = () => {
           </form>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };

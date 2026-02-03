@@ -1,32 +1,34 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axiosInstance from '../../redux/api/axiosInstance';
 
 export const createLearner = createAsyncThunk(
   'learners/create',
   async (learnerData, thunkAPI) => {
     try {
-      const response = await axios.post(
-        'https://chokmah-resources-backend.onrender.com/api/v1/users/learners',
+      const response = await axiosInstance.post(
+        '/api/v1/users/learners',
         { learner: learnerData }
       );
       return response.data;
     } catch (err) {
-      // ✅ Pass Rails validation errors back
+      // ✅ Pass Rails validation errors back cleanly
       return thunkAPI.rejectWithValue(
-        err.response?.data?.errors || ["Something went wrong"]
+        err.response?.data?.errors || ['Something went wrong']
       );
     }
   }
 );
 
+const initialState = {
+  invitationToken: '',
+  isLoading: false,
+  error: null,
+  success: false,
+};
+
 const learnerSlice = createSlice({
   name: 'learners',
-  initialState: {
-    invitationToken: '',
-    isLoading: false,
-    error: null,
-    success: false,
-  },
+  initialState,
   reducers: {
     clearLearnerState: (state) => {
       state.invitationToken = '';
@@ -45,8 +47,9 @@ const learnerSlice = createSlice({
       .addCase(createLearner.fulfilled, (state, action) => {
         state.isLoading = false;
         state.success = true;
-        // ✅ Correct path: token is inside action.payload.learner
-        state.invitationToken = action.payload.learner?.invitation_token || '';
+        // ✅ Correct path: token is nested under learner
+        state.invitationToken =
+          action.payload.learner?.invitation_token || '';
       })
       .addCase(createLearner.rejected, (state, action) => {
         state.isLoading = false;

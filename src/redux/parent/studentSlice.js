@@ -1,16 +1,20 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axiosInstance from '../../api/axiosInstance';
+import axiosInstance from '../../redux/api/axiosInstance';
 import { notifySuccess, notifyError } from '../../utils/NotificationSystem';
 
 export const fetchStudentById = createAsyncThunk(
   'student/fetchStudentById',
   async (studentId, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`https://chokmah-resources-backend.onrender.com/students/${studentId}`);
+      const response = await axiosInstance.get(
+        `/students/${studentId}`
+      );
       return response.data;
     } catch (err) {
-      notifyError("Failed to fetch student data.");
-      return rejectWithValue(err.response?.data || err.message);
+      notifyError('Failed to fetch student data.');
+      return rejectWithValue(
+        err.response?.data || err.message
+      );
     }
   }
 );

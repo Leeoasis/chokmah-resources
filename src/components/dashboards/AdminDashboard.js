@@ -8,11 +8,13 @@ import Header from "./features/admin/Header";
 import CalendarSection from "./features/student/CalenderSection";
 import WelcomeSection from "./features/student/WelcomeSection";
 import CreateLearnerForm from "./features/admin/CreateLearnerForm";
+import CreateTeacherForm from "./features/admin/CreateTeacherForm";
 import ReportsSection from "./features/admin/AdminReports";
-import StudentProfileSection from "./features/student/ProfileSection";
+import AdminProfileSection from "./features/admin/AdminProfileSection";
 import NotificationsSection from "./features/student/Notifications";
 import ResourcesSection from "./features/admin/AdminResources";
-import AdminLearners from "./features/admin/AdminLearners";   // ✅ new import
+import AdminLearners from "./features/admin/AdminLearners";
+import AdminTeachers from "./features/admin/AdminTeachers";
 
 import { logoutUser } from "../../redux/auth/logoutSlice";
 import { fetchProfile } from "../../redux/profileSlice";
@@ -66,10 +68,20 @@ const AdminDashboard = () => {
   const renderContent = () => {
     const contentMap = {
       "Create Learner": <CreateLearnerForm />,
+      "Create Teacher": <CreateTeacherForm />,    // ✅ new section
       Learners: <AdminLearners />,                 // ✅ new section
+      Teachers: <AdminTeachers />,                 // ✅ new section
       Reports: <ReportsSection />,
       Resources: <ResourcesSection />,
-      Profile: <StudentProfileSection />,
+      Profile: (
+        <AdminProfileSection
+          profile={profile}
+          onUpdate={(data) => console.log('Update profile:', data)}
+          loading={false}
+          error={null}
+          successMessage={null}
+        />
+      ),
       Notifications: <NotificationsSection notifications={notifications} />,
       Calendar: (
         <CalendarSection

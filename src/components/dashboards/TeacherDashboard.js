@@ -1,33 +1,30 @@
-import React, { useEffect, useState } from "react";
-import ModalComponent from "../ModalComponent";
-import { useNavigate } from "react-router-dom";
+// src/components/dashboards/TeacherDashboard.js
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
-import ParentSidebar from "./features/parent/Sidebar";
-import Header from "./features/parent/Header";
-import CalendarSection from "./features/student/CalenderSection";
-import WelcomeSection from "./features/student/WelcomeSection";
-import ReportsSection from "./features/parent/Reports";
-import ParentProfileSection from "./features/parent/ParentProfileSection";
-import NotificationsSection from "./features/student/Notifications";
-import ResourcesSection from "./features/parent/ResourcesSection";
-
 import { logoutUser } from "../../redux/auth/logoutSlice";
 import { fetchProfile } from "../../redux/profileSlice";
-
+import ModalComponent from "../ModalComponent";
+import { useNavigate } from "react-router-dom";
+import TeacherSidebar from "./features/student/TeacherSidebar";
+import Header from "./features/student/Header";
+import CalendarSection from "./features/student/CalenderSection";
+import WelcomeSection from "./features/student/WelcomeSection";
+import TeacherProfileSection from "./features/student/TeacherProfileSection";
+import NotificationsSection from "./features/student/Notifications";
+import TeacherLearnersSection from "./features/student/TeacherLearnersSection";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const ParentDashboard = () => {
-  const [selectedOption, setSelectedOption] = useState("Welcome");
+const TeacherDashboard = () => {
+  const [selectedOption, setSelectedOption] = useState("My Learners");
   const [date, setDate] = useState(new Date());
   const [events, setEvents] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [eventTitle, setEventTitle] = useState("");
-  const [notifications, setNotifications] = useState([]);
+  const [notifications] = useState([]);
 
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const profile = useSelector((state) => state.profile?.data);
 
@@ -55,17 +52,17 @@ const ParentDashboard = () => {
   };
 
   const resolvedName =
-    profile?.parent_name ||
-    profile?.child_name ||
     profile?.name ||
     JSON.parse(localStorage.getItem("user") || "{}")?.email ||
-    "Parent";
+    "Teacher";
 
   const renderContent = () => {
     const contentMap = {
-      Reports: <ReportsSection />,
+      "My Learners": (
+        <TeacherLearnersSection />
+      ),
       Profile: (
-        <ParentProfileSection
+        <TeacherProfileSection
           profile={profile}
           onUpdate={(data) => console.log('Update profile:', data)}
           loading={false}
@@ -73,7 +70,9 @@ const ParentDashboard = () => {
           successMessage={null}
         />
       ),
-      Notifications: <NotificationsSection notifications={notifications} />,
+      Notifications: (
+        <NotificationsSection notifications={notifications} />
+      ),
       Calendar: (
         <CalendarSection
           date={date}
@@ -82,24 +81,25 @@ const ParentDashboard = () => {
           openModal={openModal}
         />
       ),
-      Resources: <ResourcesSection profile={{ role: "parent" }} />,
     };
 
-    return contentMap[selectedOption] || <WelcomeSection />;
+    return contentMap[selectedOption] || <TeacherLearnersSection />;
   };
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 text-white">
       <ToastContainer position="top-right" autoClose={3000} />
       <div className="flex flex-col lg:flex-row flex-grow">
-        <ParentSidebar
+        <TeacherSidebar
           selectedOption={selectedOption}
           setSelectedOption={setSelectedOption}
         />
         <div className="flex-1 p-4 lg:p-8 pt-20 lg:pt-24">
           <Header
+            title="Teacher Dashboard"
             handleLogout={handleLogout}
             profile={{ name: resolvedName }}
+            notifications={notifications}
           />
           <div className="bg-secondary shadow-lg rounded-lg p-4 lg:p-6 flex-grow">
             {renderContent()}
@@ -117,4 +117,4 @@ const ParentDashboard = () => {
   );
 };
 
-export default ParentDashboard;
+export default TeacherDashboard;

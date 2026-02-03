@@ -1,22 +1,22 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axiosInstance from '../../redux/api/axiosInstance';
 
 export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (userCredentials) => {
-    const url = 'https://chokmah-resources-backend.onrender.com/api/v1/users/login';
-    const response = await axios.post(url, userCredentials, {
-      headers: { Accept: 'application/json' },
-    });
+    const response = await axiosInstance.post(
+      '/api/v1/users/login',
+      userCredentials
+    );
 
-    // Extract token from header
+    // Extract token from header or body
     const authHeader =
       response.headers['authorization'] || response.headers['Authorization'];
+
     const token = authHeader?.split(' ')[1] || response.data?.token;
 
     if (token) {
-      localStorage.setItem('token', token); // ✅ store raw token only
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      localStorage.setItem('token', token); // store raw token only
     }
 
     localStorage.setItem('user', JSON.stringify(response.data.data));
@@ -24,9 +24,15 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+const initialState = {
+  user: {},
+  isLoading: false,
+  error: null,
+};
+
 const authSlice = createSlice({
   name: 'auth',
-  initialState: { user: {}, isLoading: false, error: null },
+  initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
