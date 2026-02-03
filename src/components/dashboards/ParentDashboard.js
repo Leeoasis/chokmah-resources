@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ModalComponent from "../ModalComponent";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import Navbar from "../landingSite/Navbar";
 
 import ParentSidebar from "./features/parent/Sidebar";
 import Header from "./features/parent/Header";
@@ -90,13 +91,14 @@ const ParentDashboard = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 text-white">
+      <Navbar />
       <ToastContainer position="top-right" autoClose={3000} />
-      <div className="flex flex-col lg:flex-row flex-grow">
+      <div className="flex flex-col lg:flex-row flex-grow pt-16">
         <ParentSidebar
           selectedOption={selectedOption}
           setSelectedOption={setSelectedOption}
         />
-        <div className="flex-1 p-4 lg:p-8 pt-20 lg:pt-24">
+        <div className="flex-1 p-4 lg:p-8">
           <Header
             handleLogout={handleLogout}
             profile={{ name: resolvedName }}

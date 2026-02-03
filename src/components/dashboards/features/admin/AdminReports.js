@@ -33,7 +33,7 @@ const Chip = ({ active, onClick, children }) => (
   <button
     onClick={onClick}
     className={[
-      "text-xs px-2 py-1 rounded-full border transition",
+      "text-xs sm:text-sm px-2 py-1 rounded-full border transition",
       active
         ? "border-amber-400/80 bg-amber-400/10 text-amber-200"
         : "border-white/10 bg-white/5 text-gray-300 hover:border-amber-400/40",
@@ -321,34 +321,40 @@ const AdminReports = () => {
         </div>
 
         {/* Quick filters */}
-        <div className="mt-4 flex flex-wrap items-center gap-2">
-          <span className="text-xs text-gray-400 mr-1">Year:</span>
-          <Chip active={!activeYear} onClick={() => setActiveYear(null)}>All</Chip>
-          {allYears.map((y) => (
-            <Chip key={y} active={activeYear === y} onClick={() => setActiveYear(y)}>
-              {y}
-            </Chip>
-          ))}
+        <div className="mt-4 space-y-3 sm:space-y-0 sm:flex sm:flex-wrap sm:items-center sm:gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs text-gray-400 mr-1">Year:</span>
+            <Chip active={!activeYear} onClick={() => setActiveYear(null)}>All</Chip>
+            {allYears.map((y) => (
+              <Chip key={y} active={activeYear === y} onClick={() => setActiveYear(y)}>
+                {y}
+              </Chip>
+            ))}
+          </div>
 
-          <span className="text-xs text-gray-600 mx-2">|</span>
+          <div className="hidden sm:block text-xs text-gray-600 mx-2">|</div>
 
-          <span className="text-xs text-gray-400 mr-1">Term:</span>
-          <Chip active={!activeTerm} onClick={() => setActiveTerm(null)}>All</Chip>
-          {allTerms.map((t) => (
-            <Chip key={t} active={activeTerm === t} onClick={() => setActiveTerm(t)}>
-              {t}
-            </Chip>
-          ))}
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs text-gray-400 mr-1">Term:</span>
+            <Chip active={!activeTerm} onClick={() => setActiveTerm(null)}>All</Chip>
+            {allTerms.map((t) => (
+              <Chip key={t} active={activeTerm === t} onClick={() => setActiveTerm(t)}>
+                {t}
+              </Chip>
+            ))}
+          </div>
 
-          <span className="text-xs text-gray-600 mx-2">|</span>
+          <div className="hidden sm:block text-xs text-gray-600 mx-2">|</div>
 
-          <span className="text-xs text-gray-400 mr-1">Subject:</span>
-          <Chip active={!activeSubject} onClick={() => setActiveSubject(null)}>All</Chip>
-          {allSubjects.map((s) => (
-            <Chip key={s} active={activeSubject === s} onClick={() => setActiveSubject(s)}>
-              {s}
-            </Chip>
-          ))}
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs text-gray-400 mr-1">Subject:</span>
+            <Chip active={!activeSubject} onClick={() => setActiveSubject(null)}>All</Chip>
+            {allSubjects.map((s) => (
+              <Chip key={s} active={activeSubject === s} onClick={() => setActiveSubject(s)}>
+                {s}
+              </Chip>
+            ))}
+          </div>
         </div>
 
         {/* Loading / Error */}

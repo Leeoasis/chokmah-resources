@@ -30,7 +30,7 @@ const Chip = ({ active, onClick, children }) => (
   <button
     onClick={onClick}
     className={[
-      "text-xs px-2 py-1 rounded-full border transition",
+      "text-xs sm:text-sm px-2 py-1 rounded-full border transition",
       active
         ? "border-amber-400/80 bg-amber-400/10 text-amber-200"
         : "border-white/10 bg-white/5 text-gray-300 hover:border-amber-400/40",

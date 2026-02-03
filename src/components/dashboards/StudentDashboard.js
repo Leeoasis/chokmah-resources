@@ -1,38 +1,32 @@
-import React, { useEffect, useState } from "react";
-import ModalComponent from "../ModalComponent";
-import { useNavigate } from "react-router-dom";
+// src/components/dashboards/StudentDashboard.js
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Navbar from "../landingSite/Navbar";
-
-import AdminSidebar from "./features/admin/Sidebar";
-import Header from "./features/admin/Header";
-import CalendarSection from "./features/student/CalenderSection";
-import WelcomeSection from "./features/student/WelcomeSection";
-import CreateLearnerForm from "./features/admin/CreateLearnerForm";
-import CreateTeacherForm from "./features/admin/CreateTeacherForm";
-import ReportsSection from "./features/admin/AdminReports";
-import AdminProfileSection from "./features/admin/AdminProfileSection";
-import NotificationsSection from "./features/student/Notifications";
-import ResourcesSection from "./features/admin/AdminResources";
-import AdminLearners from "./features/admin/AdminLearners";
-import AdminTeachers from "./features/admin/AdminTeachers";
-
 import { logoutUser } from "../../redux/auth/logoutSlice";
 import { fetchProfile } from "../../redux/profileSlice";
-
+import ModalComponent from "../ModalComponent";
+import { useNavigate } from "react-router-dom";
+import Navbar from "../landingSite/Navbar";
+import StudentSidebar from "./features/student/StudentSidebar";
+import Header from "./features/student/Header";
+import CalendarSection from "./features/student/CalenderSection";
+import WelcomeSection from "./features/student/WelcomeSection";
+import LearningMaterialsSection from "./features/student/LearningMaterialsSection";
+import ReportsSection from "./features/student/Reports";
+import StudentProfileSection from "./features/student/ProfileSection";
+import NotificationsSection from "./features/student/Notifications";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const AdminDashboard = () => {
-  const [selectedOption, setSelectedOption] = useState("Create Learner");
+const StudentDashboard = () => {
+  const [selectedOption, setSelectedOption] = useState("Learning Materials");
   const [date, setDate] = useState(new Date());
   const [events, setEvents] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [eventTitle, setEventTitle] = useState("");
   const [notifications, setNotifications] = useState([]);
 
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const profile = useSelector((state) => state.profile?.data);
 
@@ -60,30 +54,24 @@ const AdminDashboard = () => {
   };
 
   const resolvedName =
-    profile?.parent_name ||
-    profile?.child_name ||
     profile?.name ||
     JSON.parse(localStorage.getItem("user") || "{}")?.email ||
-    "Admin";
+    "Teacher";
 
   const renderContent = () => {
     const contentMap = {
-      "Create Learner": <CreateLearnerForm />,
-      "Create Teacher": <CreateTeacherForm />,    // ✅ new section
-      Learners: <AdminLearners />,                 // ✅ new section
-      Teachers: <AdminTeachers />,                 // ✅ new section
-      Reports: <ReportsSection />,
-      Resources: <ResourcesSection />,
-      Profile: (
-        <AdminProfileSection
-          profile={profile}
-          onUpdate={(data) => console.log('Update profile:', data)}
-          loading={false}
-          error={null}
-          successMessage={null}
-        />
+      "Learning Materials": (
+        <LearningMaterialsSection />
       ),
-      Notifications: <NotificationsSection notifications={notifications} />,
+      Reports: (
+        <ReportsSection />
+      ),
+      Profile: (
+        <TeacherProfileSection />
+      ),
+      Notifications: (
+        <NotificationsSection notifications={notifications} />
+      ),
       Calendar: (
         <CalendarSection
           date={date}
@@ -102,7 +90,7 @@ const AdminDashboard = () => {
       <Navbar />
       <ToastContainer position="top-right" autoClose={3000} />
       <div className="flex flex-col lg:flex-row flex-grow pt-16">
-        <AdminSidebar
+        <StudentSidebar
           selectedOption={selectedOption}
           setSelectedOption={setSelectedOption}
         />
@@ -128,4 +116,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+export default StudentDashboard;

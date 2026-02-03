@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 // --- Inline SVG icons (no extra deps) ---
@@ -42,12 +42,24 @@ const IconLearner = () => (
     <path fill="currentColor" d="M2 7l10-4 10 4-10 4L2 7zm3 6v4l7 3 7-3v-4l-7 3-7-3z"/>
   </svg>
 );
+const IconMenu = () => (
+  <svg viewBox="0 0 24 24" className="w-6 h-6" aria-hidden>
+    <path fill="currentColor" d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+  </svg>
+);
+const IconClose = () => (
+  <svg viewBox="0 0 24 24" className="w-6 h-6" aria-hidden>
+    <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+  </svg>
+);
 
 export default function HomePage() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-gray-950 text-white">
       {/* --- Top Nav --- */}
-      <nav className="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-gray-900/70 bg-gray-900/80 border-b border-white/10">
+      <nav className="fixed top-0 left-0 right-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-gray-900/70 bg-gray-900/80 border-b border-white/10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="inline-flex items-center gap-2 group">
             <span className="h-2.5 w-2.5 rounded-full bg-amber-400 group-hover:scale-125 transition-transform"/>
@@ -60,15 +72,39 @@ export default function HomePage() {
             <a href="#workflow" className="hover:text-amber-300 transition">How it works</a>
             <a href="#faq" className="hover:text-amber-300 transition">FAQ</a>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-3">
             <Link to="/login" className="text-amber-300 hover:text-amber-200 font-semibold">Sign in</Link>
             <Link to="/register" className="bg-amber-400 text-gray-900 font-semibold px-4 py-2 rounded-xl shadow hover:bg-amber-300 transition">Create Parent Account</Link>
           </div>
+          {/* Mobile menu button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden p-2 rounded-lg hover:bg-white/10 transition"
+            aria-label="Toggle mobile menu"
+          >
+            {isMobileMenuOpen ? <IconClose /> : <IconMenu />}
+          </button>
         </div>
+        {/* Mobile menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden border-t border-white/10 bg-gray-900/95 backdrop-blur">
+            <div className="px-6 py-4 space-y-4">
+              <a href="#about" className="block py-2 hover:text-amber-300 transition" onClick={() => setIsMobileMenuOpen(false)}>About</a>
+              <a href="#features" className="block py-2 hover:text-amber-300 transition" onClick={() => setIsMobileMenuOpen(false)}>What you get</a>
+              <a href="#benefits" className="block py-2 hover:text-amber-300 transition" onClick={() => setIsMobileMenuOpen(false)}>Benefits</a>
+              <a href="#workflow" className="block py-2 hover:text-amber-300 transition" onClick={() => setIsMobileMenuOpen(false)}>How it works</a>
+              <a href="#faq" className="block py-2 hover:text-amber-300 transition" onClick={() => setIsMobileMenuOpen(false)}>FAQ</a>
+              <div className="border-t border-white/10 pt-4 space-y-2">
+                <Link to="/login" className="block py-2 text-amber-300 hover:text-amber-200 font-semibold" onClick={() => setIsMobileMenuOpen(false)}>Sign in</Link>
+                <Link to="/register" className="block bg-amber-400 text-gray-900 font-semibold px-4 py-2 rounded-xl shadow hover:bg-amber-300 transition text-center" onClick={() => setIsMobileMenuOpen(false)}>Create Parent Account</Link>
+              </div>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* --- HERO --- */}
-      <header className="relative overflow-hidden">
+      <header className="relative overflow-hidden pt-16">
         {/* animated background orbs */}
         <div aria-hidden className="pointer-events-none absolute -top-24 -right-24 h-[28rem] w-[28rem] rounded-full bg-amber-400/20 blur-3xl"/>
         <div aria-hidden className="pointer-events-none absolute -bottom-24 -left-24 h-[24rem] w-[24rem] rounded-full bg-amber-300/10 blur-3xl"/>
@@ -77,17 +113,17 @@ export default function HomePage() {
           <p className="inline-flex items-center gap-2 text-xs md:text-sm uppercase tracking-wider text-amber-300/90 border border-amber-300/30 rounded-full px-3 py-1 mb-5">
             <span className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse"/> Official parent portal for SPPS Chokmah
           </p>
-          <h1 className="text-4xl md:text-6xl font-black leading-tight">
+          <h1 className="text-3xl md:text-6xl font-black leading-tight">
             Be informed. <span className="text-amber-400">Support your child.</span>
           </h1>
-          <p className="mt-5 text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
+          <p className="mt-5 text-base md:text-xl text-gray-300 max-w-3xl mx-auto">
             View homework and notes, check term reports, and receive important updates — all in one secure place, on any device.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/register" className="px-6 py-3 rounded-2xl bg-amber-400 text-gray-900 font-semibold hover:shadow-lg hover:shadow-amber-400/20 transition">
+            <Link to="/register" className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-amber-400 text-gray-900 font-semibold hover:shadow-lg hover:shadow-amber-400/20 transition text-center">
               Create Parent Account
             </Link>
-            <Link to="/login" className="px-6 py-3 rounded-2xl border border-amber-400 text-amber-300 hover:bg-amber-400/10 transition">
+            <Link to="/login" className="w-full sm:w-auto px-6 py-3 rounded-2xl border border-amber-400 text-amber-300 hover:bg-amber-400/10 transition text-center">
               Sign in
             </Link>
           </div>

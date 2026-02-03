@@ -5,6 +5,7 @@ import { logoutUser } from "../../redux/auth/logoutSlice";
 import { fetchProfile } from "../../redux/profileSlice";
 import ModalComponent from "../ModalComponent";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../landingSite/Navbar";
 import TeacherSidebar from "./features/student/TeacherSidebar";
 import Header from "./features/student/Header";
 import CalendarSection from "./features/student/CalenderSection";
@@ -88,13 +89,14 @@ const TeacherDashboard = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 text-white">
+      <Navbar />
       <ToastContainer position="top-right" autoClose={3000} />
-      <div className="flex flex-col lg:flex-row flex-grow">
+      <div className="flex flex-col lg:flex-row flex-grow pt-16">
         <TeacherSidebar
           selectedOption={selectedOption}
           setSelectedOption={setSelectedOption}
         />
-        <div className="flex-1 p-4 lg:p-8 pt-20 lg:pt-24">
+        <div className="flex-1 p-4 lg:p-8">
           <Header
             title="Teacher Dashboard"
             handleLogout={handleLogout}
