@@ -33,12 +33,13 @@ const Register = () => {
     if (formData.invitation_token.trim()) {
       try {
         const res = await fetch(
-          `https://chokmah-resources-backend.onrender.com/api/v1/users/teacher_by_token/${formData.invitation_token}`,
+          `http://localhost:3000/api/v1/users/teacher_by_token/${formData.invitation_token}`,
           {
             method: 'GET',
             headers: {
               'Accept': 'application/json',
             },
+            credentials: 'omit', // Don't send cookies to avoid 431 error
           }
         );
         if (res.ok) {
@@ -104,12 +105,13 @@ const Register = () => {
         <div className="absolute inset-0 bg-black opacity-50 z-0"></div>
         <div className="bg-white bg-opacity-70 p-8 rounded-lg shadow-md w-full max-w-md z-10 mt-20 mb-12">
           <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">Registration</h1>
-          <form onSubmit={handleSubmit} encType="multipart/form-data">
+          <form onSubmit={handleSubmit} encType="multipart/form-data" autoComplete="off">
             <select
               name="role"
               value={formData.role}
               onChange={handleChange}
               required
+              autoComplete="off"
               className="mb-4 p-3 w-full border rounded bg-white"
             >
               <option value="parent">Parent</option>
@@ -125,6 +127,7 @@ const Register = () => {
                 onBlur={handleInvitationTokenBlur}
                 placeholder="Invitation Code"
                 required
+                autoComplete="off"
                 className="mb-4 p-3 w-full border rounded"
               />
             )}
@@ -138,6 +141,7 @@ const Register = () => {
                   onChange={handleChange}
                   placeholder="Parent Full Name"
                   required
+                  autoComplete="off"
                   className="mb-4 p-3 w-full border rounded"
                 />
                 <input
@@ -166,6 +170,7 @@ const Register = () => {
               onChange={handleChange}
               placeholder="Email"
               required
+              autoComplete="off"
               className="mb-4 p-3 w-full border rounded"
             />
             <input
@@ -175,6 +180,7 @@ const Register = () => {
               onChange={handleChange}
               placeholder="Password"
               required
+              autoComplete="new-password"
               className="mb-4 p-3 w-full border rounded"
             />
             <input
@@ -184,6 +190,7 @@ const Register = () => {
               onChange={handleChange}
               placeholder="Confirm Password"
               required
+              autoComplete="new-password"
               className="mb-4 p-3 w-full border rounded"
             />
             <button

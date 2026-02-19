@@ -12,6 +12,7 @@ import ReportsSection from "./features/parent/Reports";
 import ParentProfileSection from "./features/parent/ParentProfileSection";
 import NotificationsSection from "./features/student/Notifications";
 import ResourcesSection from "./features/parent/ResourcesSection";
+import PacesSection from "./features/parent/PacesSection";
 
 import { logoutUser } from "../../redux/auth/logoutSlice";
 import { fetchProfile } from "../../redux/profileSlice";
@@ -84,6 +85,7 @@ const ParentDashboard = () => {
         />
       ),
       Resources: <ResourcesSection profile={{ role: "parent" }} />,
+      PACEs: <PacesSection />,
     };
 
     return contentMap[selectedOption] || <WelcomeSection />;

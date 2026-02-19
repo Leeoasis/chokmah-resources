@@ -16,6 +16,7 @@ import NotificationsSection from "./features/student/Notifications";
 import ResourcesSection from "./features/admin/AdminResources";
 import AdminLearners from "./features/admin/AdminLearners";
 import AdminTeachers from "./features/admin/AdminTeachers";
+import AdminPaces from "./features/admin/AdminPaces";
 
 import { logoutUser } from "../../redux/auth/logoutSlice";
 import { fetchProfile } from "../../redux/profileSlice";
@@ -74,6 +75,7 @@ const AdminDashboard = () => {
       Teachers: <AdminTeachers />,                 // ✅ new section
       Reports: <ReportsSection />,
       Resources: <ResourcesSection />,
+      PACEs: <AdminPaces />,
       Profile: (
         <AdminProfileSection
           profile={profile}

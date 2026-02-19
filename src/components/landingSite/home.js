@@ -59,7 +59,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gray-950 text-white">
       {/* --- Top Nav --- */}
-      <nav className="fixed top-0 left-0 right-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-gray-900/70 bg-gray-900/80 border-b border-white/10">
+      <nav className="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-gray-900/70 bg-gray-900/80 border-b border-white/10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="inline-flex items-center gap-2 group">
             <span className="h-2.5 w-2.5 rounded-full bg-amber-400 group-hover:scale-125 transition-transform"/>
@@ -104,7 +104,7 @@ export default function HomePage() {
       </nav>
 
       {/* --- HERO --- */}
-      <header className="relative overflow-hidden pt-16">
+      <header className="relative overflow-hidden">
         {/* animated background orbs */}
         <div aria-hidden className="pointer-events-none absolute -top-24 -right-24 h-[28rem] w-[28rem] rounded-full bg-amber-400/20 blur-3xl"/>
         <div aria-hidden className="pointer-events-none absolute -bottom-24 -left-24 h-[24rem] w-[24rem] rounded-full bg-amber-300/10 blur-3xl"/>

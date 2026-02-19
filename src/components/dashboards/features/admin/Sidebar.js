@@ -8,6 +8,7 @@ const AdminSidebar = ({ selectedOption, setSelectedOption }) => {
     "Learners",     // ✅ new section
     "Reports",
     "Resources",
+    "PACEs",
     "Profile",
     "Notifications",
     "Calendar",

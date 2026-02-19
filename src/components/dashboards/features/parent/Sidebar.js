@@ -7,6 +7,7 @@ const ParentSidebar = ({ selectedOption, setSelectedOption }) => (
       {[
         'Reports',
         'Resources',
+        'PACEs',
         'Profile',
         'Notifications',
         'Calendar',

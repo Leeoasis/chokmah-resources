@@ -12,6 +12,7 @@ const CreateLearnerForm = () => {
   const [formData, setFormData] = useState({
     child_name: "",
     child_grade: "",
+    class_name: "",
     teacher_id: "",
   });
 
@@ -43,7 +44,7 @@ const CreateLearnerForm = () => {
   useEffect(() => {
     if (success) {
       // ✅ Clear form after successful creation
-      setFormData({ child_name: "", child_grade: "", teacher_id: "" });
+      setFormData({ child_name: "", child_grade: "", class_name: "", teacher_id: "" });
       setCopied(false); // reset copy state
       // ✅ Refresh teachers list to update student counts
       dispatch(fetchTeachers());
@@ -124,6 +125,22 @@ const CreateLearnerForm = () => {
             required
             className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400/60"
           />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Class Name</label>
+          <input
+            name="class_name"
+            type="text"
+            autoComplete="off"
+            placeholder="e.g., 8A, 8B, or leave blank"
+            value={formData.class_name}
+            onChange={handleChange}
+            className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400/60"
+          />
+          <p className="text-xs text-gray-400 mt-1">
+            Optional: Class identifier like "8A" or "10C". Leave blank if not using class filtering.
+          </p>
         </div>
 
         <div>

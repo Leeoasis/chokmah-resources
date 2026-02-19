@@ -8,6 +8,8 @@ import logoutReducer from './auth/logoutSlice';
 import profileReducer from './profileSlice';
 import adminLearnerReducer from './admin/adminLearnerSlice';
 import teacherReducer from './teacherSlice';
+import adminPacesReducer from './admin/pacesSlice';
+import learnerPacesReducer from './parent/pacesSlice';
 
 const store = configureStore({
   reducer: {
@@ -20,6 +22,8 @@ const store = configureStore({
     profile: profileReducer,
     adminLearners: adminLearnerReducer,
     teacher: teacherReducer,
+    adminPaces: adminPacesReducer,
+    learnerPaces: learnerPacesReducer,
   },
 });
 
