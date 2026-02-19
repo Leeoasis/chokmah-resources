@@ -12,8 +12,9 @@ const Navbar = () => {
   const dispatch = useDispatch();
 
   // Read auth state from localStorage
-  const user = JSON.parse(localStorage.getItem("user"));
-  const isLoggedIn = !!localStorage.getItem("token");
+  // const user = JSON.parse(localStorage.getItem("user")); // removed unused variable
+  // Only consider logged in if both token and user are present
+  const isLoggedIn = !!localStorage.getItem("token") && !!localStorage.getItem("user");
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -25,7 +26,7 @@ const Navbar = () => {
 
   const getLinkClass = (path) => {
     return location.pathname === path
-      ? "bg-amber-400 text-gray-900 px-4 py-2 rounded transition duration-300 flex items-center"
+      ? "bg-blue-400 text-white px-4 py-2 rounded transition duration-300 flex items-center"
       : "hover:text-amber-400 transition duration-300 flex items-center";
   };
 
@@ -36,12 +37,15 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-gray-900 text-white shadow-lg z-50">
+    <nav className="fixed top-0 left-0 w-full bg-[#1d4ed8] text-white shadow-lg z-50">
       <div className="max-w-7xl mx-auto px-4 flex justify-between items-center h-16">
         {/* Logo */}
-        <Link to="/" className="text-2xl font-bold text-amber-400">
-          SPPS Chokmah
-        </Link>
+      <Link to="/" className="flex items-center gap-2">
+        <span className="bg-white rounded-full p-1 flex items-center justify-center" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+          <img src={process.env.PUBLIC_URL + '/chomah-logo-1-removebg-preview.png'} alt="SPPS Chokmah Logo" className="h-14 w-14 object-contain" />
+        </span>
+        <span className="text-2xl font-bold text-blue-300">SPPS Chokmah Resources</span>
+      </Link>
 
         {/* Desktop Links */}
         <div className="hidden md:flex space-x-8">
@@ -59,18 +63,18 @@ const Navbar = () => {
               </Link>
             </>
           ) : (
-            <button
-              onClick={handleLogout}
-              className="bg-amber-400 text-gray-900 px-4 py-2 rounded hover:bg-amber-300 transition duration-300"
-            >
-              Logout
-            </button>
+          <button
+            onClick={handleLogout}
+            className="bg-blue-400 text-white px-4 py-2 rounded hover:bg-blue-300 transition duration-300"
+          >
+            Logout
+          </button>
           )}
         </div>
 
         {/* Hamburger Icon */}
         <button className="md:hidden flex items-center" onClick={toggleMobileMenu}>
-          <span className="text-amber-400 text-2xl">
+        <span className="text-blue-300 text-2xl">
             <FontAwesomeIcon icon={isMobileMenuOpen ? faTimes : faBars} />
           </span>
         </button>
@@ -78,7 +82,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-gray-900 text-white shadow-lg">
+      <div className="md:hidden bg-blue-900 text-white shadow-lg">
           <div className="flex flex-col space-y-4 p-4">
             <Link to="/" className={getLinkClass("/")} onClick={closeMobileMenu}>
               Home
@@ -107,7 +111,7 @@ const Navbar = () => {
                   handleLogout();
                   closeMobileMenu();
                 }}
-                className="bg-amber-400 text-gray-900 px-4 py-2 rounded hover:bg-amber-300 transition duration-300"
+              className="bg-blue-400 text-white px-4 py-2 rounded hover:bg-blue-300 transition duration-300"
               >
                 Logout
               </button>

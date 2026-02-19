@@ -32,11 +32,6 @@ const IconParent = () => (
     <path fill="currentColor" d="M8 10a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm8 0a3 3 0 1 0-3-3 3 3 0 0 0 3 3zM2 21v-1a5 5 0 0 1 10 0v1H2zm10 0v-1a5 5 0 0 1 10 0v1H12z"/>
   </svg>
 );
-const IconTeacher = () => (
-  <svg viewBox="0 0 24 24" className="w-6 h-6" aria-hidden>
-    <path fill="currentColor" d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4zM5 21v-1a7 7 0 0 1 14 0v1H5zM20 9h2v8h-2z"/>
-  </svg>
-);
 const IconLearner = () => (
   <svg viewBox="0 0 24 24" className="w-6 h-6" aria-hidden>
     <path fill="currentColor" d="M2 7l10-4 10 4-10 4L2 7zm3 6v4l7 3 7-3v-4l-7 3-7-3z"/>
@@ -59,22 +54,22 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gray-950 text-white">
       {/* --- Top Nav --- */}
-      <nav className="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-gray-900/70 bg-gray-900/80 border-b border-white/10">
+      <nav className="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-blue-900/80 bg-blue-900/90 border-b border-blue-800">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="inline-flex items-center gap-2 group">
-            <span className="h-2.5 w-2.5 rounded-full bg-amber-400 group-hover:scale-125 transition-transform"/>
-            <span className="font-extrabold tracking-tight text-lg md:text-xl">SPPS Chokmah <span className="text-amber-400">Parent Portal</span></span>
+            <img src={process.env.PUBLIC_URL + '/chomah-logo-1-removebg-preview.png'} alt="SPPS Chokmah Logo" className="h-8 w-8 object-contain" />
+            <span className="font-extrabold tracking-tight text-lg md:text-xl text-blue-200">SPPS Chokmah <span className="text-blue-400">Parent Portal</span></span>
           </Link>
           <div className="hidden md:flex items-center gap-6 text-sm">
-            <a href="#about" className="hover:text-amber-300 transition">About</a>
-            <a href="#features" className="hover:text-amber-300 transition">What you get</a>
-            <a href="#benefits" className="hover:text-amber-300 transition">Benefits</a>
-            <a href="#workflow" className="hover:text-amber-300 transition">How it works</a>
-            <a href="#faq" className="hover:text-amber-300 transition">FAQ</a>
+            <a href="#about" className="hover:text-blue-300 transition">About</a>
+            <a href="#features" className="hover:text-blue-300 transition">What you get</a>
+            <a href="#benefits" className="hover:text-blue-300 transition">Benefits</a>
+            <a href="#workflow" className="hover:text-blue-300 transition">How it works</a>
+            <a href="#faq" className="hover:text-blue-300 transition">FAQ</a>
           </div>
           <div className="hidden md:flex items-center gap-3">
-            <Link to="/login" className="text-amber-300 hover:text-amber-200 font-semibold">Sign in</Link>
-            <Link to="/register" className="bg-amber-400 text-gray-900 font-semibold px-4 py-2 rounded-xl shadow hover:bg-amber-300 transition">Create Parent Account</Link>
+            <Link to="/login" className="text-blue-200 hover:text-blue-100 font-semibold">Sign in</Link>
+            <Link to="/register" className="bg-blue-400 text-white font-semibold px-4 py-2 rounded-xl shadow hover:bg-blue-300 transition">Create Parent Account</Link>
           </div>
           {/* Mobile menu button */}
           <button
@@ -89,14 +84,14 @@ export default function HomePage() {
         {isMobileMenuOpen && (
           <div className="md:hidden border-t border-white/10 bg-gray-900/95 backdrop-blur">
             <div className="px-6 py-4 space-y-4">
-              <a href="#about" className="block py-2 hover:text-amber-300 transition" onClick={() => setIsMobileMenuOpen(false)}>About</a>
-              <a href="#features" className="block py-2 hover:text-amber-300 transition" onClick={() => setIsMobileMenuOpen(false)}>What you get</a>
-              <a href="#benefits" className="block py-2 hover:text-amber-300 transition" onClick={() => setIsMobileMenuOpen(false)}>Benefits</a>
-              <a href="#workflow" className="block py-2 hover:text-amber-300 transition" onClick={() => setIsMobileMenuOpen(false)}>How it works</a>
-              <a href="#faq" className="block py-2 hover:text-amber-300 transition" onClick={() => setIsMobileMenuOpen(false)}>FAQ</a>
+              <a href="#about" className="block py-2 hover:text-blue-300 transition" onClick={() => setIsMobileMenuOpen(false)}>About</a>
+              <a href="#features" className="block py-2 hover:text-blue-300 transition" onClick={() => setIsMobileMenuOpen(false)}>What you get</a>
+              <a href="#benefits" className="block py-2 hover:text-blue-300 transition" onClick={() => setIsMobileMenuOpen(false)}>Benefits</a>
+              <a href="#workflow" className="block py-2 hover:text-blue-300 transition" onClick={() => setIsMobileMenuOpen(false)}>How it works</a>
+              <a href="#faq" className="block py-2 hover:text-blue-300 transition" onClick={() => setIsMobileMenuOpen(false)}>FAQ</a>
               <div className="border-t border-white/10 pt-4 space-y-2">
-                <Link to="/login" className="block py-2 text-amber-300 hover:text-amber-200 font-semibold" onClick={() => setIsMobileMenuOpen(false)}>Sign in</Link>
-                <Link to="/register" className="block bg-amber-400 text-gray-900 font-semibold px-4 py-2 rounded-xl shadow hover:bg-amber-300 transition text-center" onClick={() => setIsMobileMenuOpen(false)}>Create Parent Account</Link>
+                <Link to="/login" className="block py-2 text-blue-200 hover:text-blue-100 font-semibold" onClick={() => setIsMobileMenuOpen(false)}>Sign in</Link>
+                <Link to="/register" className="block bg-blue-400 text-white font-semibold px-4 py-2 rounded-xl shadow hover:bg-blue-300 transition text-center" onClick={() => setIsMobileMenuOpen(false)}>Create Parent Account</Link>
               </div>
             </div>
           </div>
@@ -106,17 +101,17 @@ export default function HomePage() {
       {/* --- HERO --- */}
       <header className="relative overflow-hidden">
         {/* animated background orbs */}
-        <div aria-hidden className="pointer-events-none absolute -top-24 -right-24 h-[28rem] w-[28rem] rounded-full bg-amber-400/20 blur-3xl"/>
-        <div aria-hidden className="pointer-events-none absolute -bottom-24 -left-24 h-[24rem] w-[24rem] rounded-full bg-amber-300/10 blur-3xl"/>
+        <div aria-hidden className="pointer-events-none absolute -top-24 -right-24 h-[28rem] w-[28rem] rounded-full bg-blue-400/20 blur-3xl"/>
+        <div aria-hidden className="pointer-events-none absolute -bottom-24 -left-24 h-[24rem] w-[24rem] rounded-full bg-blue-300/10 blur-3xl"/>
 
         <div className="max-w-7xl mx-auto px-6 py-16 md:py-24 text-center">
-          <p className="inline-flex items-center gap-2 text-xs md:text-sm uppercase tracking-wider text-amber-300/90 border border-amber-300/30 rounded-full px-3 py-1 mb-5">
-            <span className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse"/> Official parent portal for SPPS Chokmah
+          <p className="inline-flex items-center gap-2 text-xs md:text-sm uppercase tracking-wider text-blue-200/90 border border-blue-200/30 rounded-full px-3 py-1 mb-5">
+            <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-pulse"/> Official parent portal for SPPS Chokmah
           </p>
           <h1 className="text-3xl md:text-6xl font-black leading-tight">
-            Be informed. <span className="text-amber-400">Support your child.</span>
+            Be informed. <span className="text-blue-400">Support your child.</span>
           </h1>
-          <p className="mt-5 text-base md:text-xl text-gray-300 max-w-3xl mx-auto">
+          <p className="mt-5 text-base md:text-xl text-blue-100 max-w-3xl mx-auto">
             View homework and notes, check term reports, and receive important updates — all in one secure place, on any device.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
