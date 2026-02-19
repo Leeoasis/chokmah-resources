@@ -13,8 +13,10 @@ const Navbar = () => {
 
   // Read auth state from localStorage
   // const user = JSON.parse(localStorage.getItem("user")); // removed unused variable
-  // Only consider logged in if both token and user are present
-  const isLoggedIn = !!localStorage.getItem("token") && !!localStorage.getItem("user");
+  // Only consider logged in if both token and user are present and token is not empty
+  const token = localStorage.getItem("token");
+  const user = localStorage.getItem("user");
+  const isLoggedIn = Boolean(token && token !== 'undefined' && token !== 'null' && token.trim() !== '' && user && user !== 'undefined' && user !== 'null' && user.trim() !== '');
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -37,7 +39,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-[#1d4ed8] text-white shadow-lg z-50">
+    <nav className="fixed top-0 left-0 w-full bg-[#0c1746] text-white shadow-lg z-50">
       <div className="max-w-7xl mx-auto px-4 flex justify-between items-center h-16">
         {/* Logo */}
       <Link to="/" className="flex items-center gap-2">

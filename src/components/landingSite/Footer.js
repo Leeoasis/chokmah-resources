@@ -13,7 +13,7 @@ import {
 
 const Footer = () => {
     return (
-        <footer className="bg-blue-900 text-white py-8">
+            <footer className="bg-[#0c1746] text-white py-8">
             <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
                 {/* About Section */}
                 <div>
