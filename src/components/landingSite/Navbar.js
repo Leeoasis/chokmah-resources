@@ -16,7 +16,13 @@ const Navbar = () => {
   // Only consider logged in if both token and user are present and token is not empty
   const token = localStorage.getItem("token");
   const user = localStorage.getItem("user");
-  const isLoggedIn = Boolean(token && token !== 'undefined' && token !== 'null' && token.trim() !== '' && user && user !== 'undefined' && user !== 'null' && user.trim() !== '');
+  // Only show logout if logged in and not on landing site
+  const isLanding = location.pathname === '/';
+  const isLoggedIn = Boolean(
+    !isLanding &&
+    token && token !== 'undefined' && token !== 'null' && token.trim() !== '' &&
+    user && user !== 'undefined' && user !== 'null' && user.trim() !== ''
+  );
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
